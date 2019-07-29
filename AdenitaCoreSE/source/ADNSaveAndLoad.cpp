@@ -1,5 +1,3 @@
-#pragma once
-
 #include "ADNSaveAndLoad.hpp"
 
 
@@ -1034,10 +1032,12 @@ void ADNLoader::OutputToOxDNA(ADNNanorobot* nanorobot, std::string folder, ADNAu
 {
   if (nanorobot == nullptr) return;
 
+  std::ofstream& outConf;
+  std::ofstream& outTopo;
   std::string fnameConf = "config.conf";
-  std::ofstream& outConf = CreateOutputFile(fnameConf, folder);
+  CreateOutputFile(fnameConf, folder, outConf);
   std::string fnameTopo = "topo.top";
-  std::ofstream& outTopo = CreateOutputFile(fnameTopo, folder);
+  CreateOutputFile(fnameTopo, folder, outTopo);
 
   auto singleStrands = nanorobot->GetSingleStrands();
   SingleStrandsToOxDNA(singleStrands, outConf, outTopo, options);
@@ -1120,9 +1120,9 @@ void ADNLoader::SingleStrandsToOxDNA(CollectionMap<ADNSingleStrand> singleStrand
   }
 }
 
-std::ofstream ADNLoader::CreateOutputFile(std::string fname, std::string folder, bool sign)
+void ADNLoader::CreateOutputFile(std::string fname, std::string folder, std::ofstream& output, bool sign)
 {
-  std::ofstream output(folder + "/" + fname);
+  output = std::ofstream(folder + "/" + fname);
 
   time_t rawtime;
   struct tm * timeinfo;
@@ -1137,8 +1137,6 @@ std::ofstream ADNLoader::CreateOutputFile(std::string fname, std::string folder,
   if (sign) {
     output << "## File created with Adenita on " + str + "\n";
   }
-  
-  return output;
 }
 
 std::pair<bool, ADNPointer<ADNPart>> ADNLoader::InputFromOxDNA(std::string topoFile, std::string configFile)

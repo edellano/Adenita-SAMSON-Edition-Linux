@@ -99,7 +99,7 @@ time_t ADNLogger::LogDebugPassedSeconds(time_t time1, std::string text)
 clock_t ADNLogger::LogDebugPassedMilliseconds(clock_t time1, std::string text)
 {
   SEConfig& config = SEConfig::GetInstance();
-  if (config.mode == "debug_log") {
+  if (config.mode == SEConfigMode::DEBUG_LOG) {
     return LogPassedMilliseconds(time1, text);
   }
 
@@ -109,7 +109,7 @@ clock_t ADNLogger::LogDebugPassedMilliseconds(clock_t time1, std::string text)
 void ADNLogger::LogDebugDateTime()
 {
   SEConfig& config = SEConfig::GetInstance();
-  if (config.mode == "debug_log") {
+  if (config.mode == SEConfigMode::DEBUG_LOG) {
     LogDateTime();
   }
 }

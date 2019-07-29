@@ -54,7 +54,7 @@ public:
       std::string total = std::to_string(num_elements_*dim_);
       std::string msg = "Trying to access position " + pos + " of array of size " + total;
       //ADNAuxiliary::log(msg);
-      throw ERROR_OUT_OF_BOUNDS;
+      throw ADNArray<T>::ERROR_OUT_OF_BOUNDS;
     }
     return array_[dim_ * idx + idy];
   }
@@ -65,7 +65,7 @@ public:
       std::string total = std::to_string(num_elements_*dim_);
       std::string msg = "Trying to access position " + pos + " of array of size " + total;
       //ADNAuxiliary::log(msg);
-      throw ERROR_OUT_OF_BOUNDS;
+      throw ADNArray<T>::ERROR_OUT_OF_BOUNDS;
     }
     return array_[dim_ * idx + idy];
   }
@@ -76,7 +76,7 @@ public:
       std::string total = std::to_string(num_elements_*dim_);
       std::string msg = "Trying to access position " + pos + " of array of size " + total;
       //ADNAuxiliary::log(msg);
-      throw ERROR_OUT_OF_BOUNDS;
+      throw ADNArray<T>::ERROR_OUT_OF_BOUNDS;
     }
     return array_[dim_ * idx];
   }
@@ -87,7 +87,7 @@ public:
       std::string total = std::to_string(num_elements_*dim_);
       std::string msg = "Trying to access position " + pos + " of array of size " + total;
       //ADNAuxiliary::log(msg);
-      throw ERROR_OUT_OF_BOUNDS;
+      throw ADNArray<T>::ERROR_OUT_OF_BOUNDS;
     }
     return array_[dim_ * idx];
   }
@@ -115,7 +115,7 @@ public:
     if (arr.GetDim() != 1 || dim_ != arr.GetNumElements()) {
       std::string msg = "Dimension mismatch when assigning row.";
       //ADNAuxiliary::log(msg);
-      throw ERROR_DIMENSION_MISMATCH;
+      throw ADNArray<T>::ERROR_DIMENSION_MISMATCH;
     }
     else {
       for (int i = 0; i < dim_; ++i) {
@@ -143,7 +143,7 @@ public:
     else {
       std::string msg = "Dimension mismatch when assigning row.";
       //ADNAuxiliary::log(msg);
-      throw ERROR_DIMENSION_MISMATCH;
+      throw ADNArray<T>::ERROR_DIMENSION_MISMATCH;
     }
     return sol;
   }
@@ -152,6 +152,12 @@ private:
   T* array_ = nullptr;
   size_t dim_;
   size_t num_elements_;
-  int ERROR_OUT_OF_BOUNDS = 30;
-  int ERROR_DIMENSION_MISMATCH = 31;
+  static int ERROR_OUT_OF_BOUNDS;
+  static int ERROR_DIMENSION_MISMATCH;
 };
+
+template<typename T>
+int ADNArray<T>::ERROR_OUT_OF_BOUNDS = 30;
+
+template<typename T>
+int ADNArray<T>::ERROR_DIMENSION_MISMATCH = 31;
