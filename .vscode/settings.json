@@ -3,8 +3,8 @@
     "cmake.configureSettings": {
         "SAMSON_SDK_PATH": "/home/elisa/OneAngstrom/SDK/0.7.0",
         "QT5_CMAKE_INCLUDE_DIR": "/home/elisa/Qt/5.9.3/gcc_64/lib/cmake/",
-        "RAPIDJSON_PATH": "/home/elisa/code/rapidjson-1.1.0/include",
-        "BOOST_PATH": "/home/elisa/code/boost_1_70_0",
+        "RAPIDJSON_PATH": "/home/elisa/Documents/code/rapidjson-1.1.0/include",
+        "BOOST_PATH": "/home/elisa/Documents/code/boost_1_70_0",
         "DEBUG": "ON"
     },
     "files.associations": {
