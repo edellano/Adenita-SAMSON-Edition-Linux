@@ -1,0 +1,655 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>SEAdenitaVisualModelPropertiesClass</class>
+ <widget class="QWidget" name="SEAdenitaVisualModelPropertiesClass">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>433</width>
+    <height>521</height>
+   </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>300</width>
+    <height>100</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string/>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <layout class="QFormLayout" name="formLayout">
+     <item row="0" column="0">
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>Scale</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QLabel" name="lblScale">
+       <property name="text">
+        <string>3</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0" colspan="2">
+      <widget class="QSlider" name="hslScale">
+       <property name="maximum">
+        <number>50</number>
+       </property>
+       <property name="singleStep">
+        <number>1</number>
+       </property>
+       <property name="pageStep">
+        <number>10</number>
+       </property>
+       <property name="value">
+        <number>30</number>
+       </property>
+       <property name="sliderPosition">
+        <number>30</number>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="tickInterval">
+        <number>1</number>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0">
+      <widget class="QLabel" name="label_3">
+       <property name="text">
+        <string>Dimension</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="QLabel" name="lblDimension">
+       <property name="text">
+        <string>3</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="0" colspan="2">
+      <widget class="QSlider" name="hslDimension">
+       <property name="minimum">
+        <number>100</number>
+       </property>
+       <property name="maximum">
+        <number>300</number>
+       </property>
+       <property name="value">
+        <number>300</number>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="0">
+      <widget class="QLabel" name="label_2">
+       <property name="text">
+        <string>Visibility</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="1">
+      <widget class="QDoubleSpinBox" name="spbVisibility">
+       <property name="singleStep">
+        <double>0.050000000000000</double>
+       </property>
+       <property name="value">
+        <double>99.989999999999995</double>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="0" colspan="2">
+      <widget class="QSlider" name="hslVisibility">
+       <property name="value">
+        <number>99</number>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="0">
+      <widget class="QLabel" name="label_4">
+       <property name="text">
+        <string>Color Mode</string>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="1">
+      <widget class="QComboBox" name="cbbPropertyColors">
+       <item>
+        <property name="text">
+         <string>Standard</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Melting Temperature</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Gibbs Free Energy</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <item row="7" column="0">
+      <widget class="QLabel" name="label_9">
+       <property name="text">
+        <string>Highlight</string>
+       </property>
+      </widget>
+     </item>
+     <item row="7" column="1">
+      <widget class="QComboBox" name="cbbHighlight">
+       <item>
+        <property name="text">
+         <string>None</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Crossovers</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>GC Content</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Tagged</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Length</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>No Base</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <item row="10" column="0">
+      <widget class="QLabel" name="label_5">
+       <property name="text">
+        <string>Property Colors</string>
+       </property>
+      </widget>
+     </item>
+     <item row="10" column="1">
+      <widget class="QComboBox" name="cbbPropertyColorSchemes">
+       <item>
+        <property name="text">
+         <string>Sequential Plasma</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Diverging Autumn</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Magic Colors</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <item row="11" column="0">
+      <widget class="QLabel" name="label_6">
+       <property name="text">
+        <string>Single Strand Colors</string>
+       </property>
+      </widget>
+     </item>
+     <item row="11" column="1">
+      <widget class="QComboBox" name="cbbSingleStrandColorScheme">
+       <item>
+        <property name="text">
+         <string>13 Colors Standard (Customizable)</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>12 Colors Pastel</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>8 Colors Dark</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>8 Colors Pastel</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <item row="12" column="0">
+      <widget class="QLabel" name="label_7">
+       <property name="text">
+        <string>Nucleotide Colors</string>
+       </property>
+      </widget>
+     </item>
+     <item row="12" column="1">
+      <widget class="QComboBox" name="cbbNucleotideColorScheme">
+       <item>
+        <property name="text">
+         <string>4 Colors Standard</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>4 Colors Dark</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>4 Colors Paired</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>2 Colors Pastel (Pyrimidine, Purine)</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <item row="13" column="0">
+      <widget class="QLabel" name="label_8">
+       <property name="text">
+        <string>Double Strand Colors</string>
+       </property>
+      </widget>
+     </item>
+     <item row="13" column="1">
+      <widget class="QComboBox" name="cbbDoulbeStrandColorScheme">
+       <item>
+        <property name="text">
+         <string>1 Color Standard</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>2 Colors Pastel</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>4 Colors Dark</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>6 Colors Pastel</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>12 Colors Pastel</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <item row="14" column="1">
+      <widget class="QCheckBox" name="chbShowBasePairing">
+       <property name="text">
+        <string>Show Base Pairing</string>
+       </property>
+      </widget>
+     </item>
+     <item row="8" column="0" colspan="2">
+      <widget class="QGroupBox" name="gboHighlight">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>100</height>
+        </size>
+       </property>
+       <property name="title">
+        <string>Highlight Options</string>
+       </property>
+       <widget class="QWidget" name="formLayoutWidget">
+        <property name="geometry">
+         <rect>
+          <x>9</x>
+          <y>19</y>
+          <width>391</width>
+          <height>91</height>
+         </rect>
+        </property>
+        <layout class="QFormLayout" name="formLayout_2">
+         <item row="1" column="0">
+          <widget class="QLabel" name="label_10">
+           <property name="text">
+            <string>Min Length (nts)</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="0">
+          <widget class="QLabel" name="label_11">
+           <property name="text">
+            <string>Max Length (nts)</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QLineEdit" name="lneMinLen"/>
+         </item>
+         <item row="2" column="1">
+          <widget class="QLineEdit" name="lneMax"/>
+         </item>
+         <item row="0" column="0">
+          <widget class="QCheckBox" name="chkNotWithinRange">
+           <property name="text">
+            <string>Not within this range</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QCheckBox" name="chkNotScaffold">
+           <property name="text">
+            <string>Not Scaffold</string>
+           </property>
+           <property name="checked">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>hslScale</sender>
+   <signal>sliderMoved(int)</signal>
+   <receiver>SEAdenitaVisualModelPropertiesClass</receiver>
+   <slot>onSliderScaleChanged(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>209</x>
+     <y>56</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>149</x>
+     <y>80</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>hslVisibility</sender>
+   <signal>sliderMoved(int)</signal>
+   <receiver>SEAdenitaVisualModelPropertiesClass</receiver>
+   <slot>onSliderVisibilityChanged(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>242</x>
+     <y>166</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>6</x>
+     <y>124</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>spbVisibility</sender>
+   <signal>valueChanged(double)</signal>
+   <receiver>SEAdenitaVisualModelPropertiesClass</receiver>
+   <slot>onSpinboxVisibilityChanged(double)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>420</x>
+     <y>137</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>149</x>
+     <y>80</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>hslDimension</sender>
+   <signal>sliderMoved(int)</signal>
+   <receiver>SEAdenitaVisualModelPropertiesClass</receiver>
+   <slot>onSliderDimensionChanged(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>173</x>
+     <y>108</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>149</x>
+     <y>80</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>cbbPropertyColors</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>SEAdenitaVisualModelPropertiesClass</receiver>
+   <slot>onPropertyColorsChanged(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>334</x>
+     <y>195</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>149</x>
+     <y>113</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>cbbPropertyColorSchemes</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>SEAdenitaVisualModelPropertiesClass</receiver>
+   <slot>onPropertyColorSchemeChanged(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>420</x>
+     <y>360</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>149</x>
+     <y>188</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>cbbSingleStrandColorScheme</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>SEAdenitaVisualModelPropertiesClass</receiver>
+   <slot>onSingleStrandColorSchemeChanged(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>420</x>
+     <y>389</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>149</x>
+     <y>188</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>cbbNucleotideColorScheme</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>SEAdenitaVisualModelPropertiesClass</receiver>
+   <slot>onNucleotideColorSchemeChanged(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>420</x>
+     <y>418</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>430</x>
+     <y>399</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>cbbDoulbeStrandColorScheme</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>SEAdenitaVisualModelPropertiesClass</receiver>
+   <slot>onDoubleStrandColorSchemeChanged(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>420</x>
+     <y>447</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>432</x>
+     <y>387</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>cbbHighlight</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>SEAdenitaVisualModelPropertiesClass</receiver>
+   <slot>onHighlightChanged(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>419</x>
+     <y>224</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>428</x>
+     <y>371</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>chbShowBasePairing</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>SEAdenitaVisualModelPropertiesClass</receiver>
+   <slot>onShowBasePairing(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>420</x>
+     <y>474</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>432</x>
+     <y>326</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>lneMinLen</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>SEAdenitaVisualModelPropertiesClass</receiver>
+   <slot>onMinLenChanged(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>304</x>
+     <y>265</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>432</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>lneMax</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>SEAdenitaVisualModelPropertiesClass</receiver>
+   <slot>onMaxLenChanged(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>260</x>
+     <y>290</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>428</x>
+     <y>311</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>chkNotWithinRange</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>SEAdenitaVisualModelPropertiesClass</receiver>
+   <slot>onNotWithinRangeChanged(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>216</x>
+     <y>267</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>216</x>
+     <y>260</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>chkNotScaffold</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>SEAdenitaVisualModelPropertiesClass</receiver>
+   <slot>onNotScaffoldChanged(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>294</x>
+     <y>267</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>216</x>
+     <y>260</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>onSliderScaleChanged(int)</slot>
+  <slot>onSliderVisibilityChanged(int)</slot>
+  <slot>onSpinboxVisibilityChanged(double)</slot>
+  <slot>onDiscreteSliderScaleChanged(int)</slot>
+  <slot>onSliderDimensionChanged(int)</slot>
+  <slot>onPropertyColorsChanged(int)</slot>
+  <slot>onPropertyColorSchemeChanged(int)</slot>
+  <slot>onSingleStrandColorSchemeChanged(int)</slot>
+  <slot>onNucleotideColorSchemeChanged(int)</slot>
+  <slot>onDoubleStrandColorSchemeChanged(int)</slot>
+  <slot>onHighlightChanged(int)</slot>
+  <slot>onShowBasePairing(bool)</slot>
+  <slot>onMinLenChanged(QString)</slot>
+  <slot>onMaxLenChanged(QString)</slot>
+  <slot>onNotWithinRangeChanged(bool)</slot>
+  <slot>onNotScaffoldChanged(bool)</slot>
+ </slots>
+</ui>

@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>SEConnectSSDNAEditorGUIClass</class>
+ <widget class="QWidget" name="SEConnectSSDNAEditorGUIClass">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>344</width>
+    <height>147</height>
+   </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>344</width>
+    <height>147</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string/>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <layout class="QGridLayout" name="gridLayout">
+     <item row="3" column="1">
+      <widget class="QLineEdit" name="lineSequence"/>
+     </item>
+     <item row="0" column="1">
+      <widget class="QRadioButton" name="rdnSS">
+       <property name="text">
+        <string>Single</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="0" rowspan="2">
+      <widget class="QLabel" name="label_2">
+       <property name="text">
+        <string>Mode:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="0">
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>Sequence:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="1">
+      <widget class="QCheckBox" name="chkAuto">
+       <property name="text">
+        <string>Auto-fill</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0" colspan="2">
+      <widget class="QCheckBox" name="chkConcat">
+       <property name="text">
+        <string>Insert strand</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QRadioButton" name="rdnDS">
+       <property name="text">
+        <string>Double</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>lineSequence</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>SEConnectSSDNAEditorGUIClass</receiver>
+   <slot>onSetSequence(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>237</x>
+     <y>67</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>149</x>
+     <y>49</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>chkAuto</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>SEConnectSSDNAEditorGUIClass</receiver>
+   <slot>onAuto(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>207</x>
+     <y>125</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>171</x>
+     <y>73</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>chkConcat</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>SEConnectSSDNAEditorGUIClass</receiver>
+   <slot>onInsert(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>171</x>
+     <y>73</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>171</x>
+     <y>73</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>rdnDS</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>SEConnectSSDNAEditorGUIClass</receiver>
+   <slot>onSelectMode()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>207</x>
+     <y>47</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>171</x>
+     <y>73</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>rdnSS</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>SEConnectSSDNAEditorGUIClass</receiver>
+   <slot>onSelectMode()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>207</x>
+     <y>21</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>171</x>
+     <y>73</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>onSelectMode()</slot>
+  <slot>onSetSequence(QString)</slot>
+  <slot>onAuto(bool)</slot>
+  <slot>onInsert(bool)</slot>
+ </slots>
+</ui>
