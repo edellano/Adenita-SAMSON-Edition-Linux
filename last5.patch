@@ -1,0 +1,771 @@
+From 2f6d364f97fe6df48ac7d43559199b1ac1733f9f Mon Sep 17 00:00:00 2001
+From: Haichao Miao <miao@cg.tuwien.ac.at>
+Date: Tue, 25 Jun 2019 13:10:29 +0200
+Subject: [PATCH 1/5] fixed alpha channel and loop bug in wireframe editor
+
+---
+ AdenitaCoreSE/source/ADNDisplayHelper.cpp  | 38 +++++++++++++++-------
+ AdenitaCoreSE/source/SEWireframeEditor.cpp |  7 +++-
+ 2 files changed, 32 insertions(+), 13 deletions(-)
+
+diff --git a/AdenitaCoreSE/source/ADNDisplayHelper.cpp b/AdenitaCoreSE/source/ADNDisplayHelper.cpp
+index 156c8b9..d023d6b 100644
+--- a/AdenitaCoreSE/source/ADNDisplayHelper.cpp
++++ b/AdenitaCoreSE/source/ADNDisplayHelper.cpp
+@@ -833,19 +833,33 @@ void ADNDisplayHelper::displayPart(ADNPointer<ADNPart> part, float basePairRadiu
+     SB_FOR(auto baseSegment, baseSegments) {
+       auto cell = baseSegment->GetCell();
+ 
++			radiiV(index) = basePairRadius;
++			SBPosition3 pos = baseSegment->GetPosition();
++			positions(index, 0) = (float)pos.v[0].getValue();
++			positions(index, 1) = (float)pos.v[1].getValue();
++			positions(index, 2) = (float)pos.v[2].getValue();
++
+       if (cell->GetType() == BasePair) {
+-        SBPosition3 pos = baseSegment->GetPosition();
+-        positions(index, 0) = (float)pos.v[0].getValue();
+-        positions(index, 1) = (float)pos.v[1].getValue();
+-        positions(index, 2) = (float)pos.v[2].getValue();
+-      }
+-
+-      colorsV(index, 0) = config.double_strand_color[0];
+-      colorsV(index, 1) = config.double_strand_color[1];
+-      colorsV(index, 2) = config.double_strand_color[2];
+-      colorsV(index, 3) = opaqueness;
+-
+-      radiiV(index) = basePairRadius;
++
++				colorsV(index, 0) = config.double_strand_color[0];
++				colorsV(index, 1) = config.double_strand_color[1];
++				colorsV(index, 2) = config.double_strand_color[2];
++				colorsV(index, 3) = opaqueness;
++      } else if (cell->GetType() == CellType::SkipPair) {
++				colorsV(index, 0) = 0.0f;
++				colorsV(index, 1) = 0.0f;
++				colorsV(index, 2) = 0.3f;
++				colorsV(index, 3) = opaqueness;
++			}
++			else if (cell->GetType() == CellType::LoopPair) {
++				radiiV(index) = config.base_pair_radius * 1.2f;
++				colorsV(index, 0) = 0.0f;
++				colorsV(index, 1) = config.double_strand_color[1];
++				colorsV(index, 2) = config.double_strand_color[2];
++				colorsV(index, 3) = opaqueness;
++			}
++
++
+ 
+       flags(index) = baseSegment->getInheritedFlags();
+ 
+diff --git a/AdenitaCoreSE/source/SEWireframeEditor.cpp b/AdenitaCoreSE/source/SEWireframeEditor.cpp
+index 39d2351..268f50e 100644
+--- a/AdenitaCoreSE/source/SEWireframeEditor.cpp
++++ b/AdenitaCoreSE/source/SEWireframeEditor.cpp
+@@ -409,6 +409,9 @@ void SEWireframeEditor::display() {
+   SEConfig& config = SEConfig::GetInstance();
+ 
+   if (!display_) return;
++	glEnable(GL_DEPTH_TEST);
++	glEnable(GL_BLEND);
++	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+ 
+   SBPosition3 currentPosition = SAMSON::getWorldPositionFromViewportPosition(SAMSON::getMousePositionInViewport());
+ 
+@@ -462,7 +465,7 @@ void SEWireframeEditor::display() {
+ 
+     if (config.preview_editor) {
+       tempPart_ = generateWireframe(true);
+-      ADNDisplayHelper::displayPart(tempPart_);
++      ADNDisplayHelper::displayPart(tempPart_, 1000.0f, 1.0f);
+     }
+ 
+     if (tempPart_ != nullptr) {
+@@ -470,6 +473,8 @@ void SEWireframeEditor::display() {
+     }
+   }
+ 
++	glDisable(GL_BLEND);
++	glDisable(GL_DEPTH_TEST);
+ 
+ }
+ 
+-- 
+2.21.0.windows.1
+
+
+From cda2b9974b22ee86843f3a2c848011ef5c196c40 Mon Sep 17 00:00:00 2001
+From: Haichao Miao <miao@cg.tuwien.ac.at>
+Date: Tue, 25 Jun 2019 13:32:32 +0200
+Subject: [PATCH 2/5] fixed cursor issue with twist editor
+
+---
+ .../resource/icons/cursor_twistMinus1BP.png   | Bin 0 -> 16823 bytes
+ .../resource/icons/cursor_twistPlus1BP.png    | Bin 0 -> 16795 bytes
+ .../resource/icons/emptyCursorCentered.png    | Bin 0 -> 16254 bytes
+ .../resource/icons/icons8-hand-cursor-40.png  | Bin 0 -> 955 bytes
+ AdenitaCoreSE/resource/icons/minus1BP.png     | Bin 1405 -> 0 bytes
+ AdenitaCoreSE/resource/icons/plus1BP.png      | Bin 1478 -> 0 bytes
+ AdenitaCoreSE/source/SETwistHelixEditor.cpp   |  19 ++++++++++++++++--
+ .../source/SETwistHelixEditorGUI.cpp          |   1 +
+ 8 files changed, 18 insertions(+), 2 deletions(-)
+ create mode 100644 AdenitaCoreSE/resource/icons/cursor_twistMinus1BP.png
+ create mode 100644 AdenitaCoreSE/resource/icons/cursor_twistPlus1BP.png
+ create mode 100644 AdenitaCoreSE/resource/icons/emptyCursorCentered.png
+ create mode 100644 AdenitaCoreSE/resource/icons/icons8-hand-cursor-40.png
+ delete mode 100644 AdenitaCoreSE/resource/icons/minus1BP.png
+ delete mode 100644 AdenitaCoreSE/resource/icons/plus1BP.png
+
+diff --git a/AdenitaCoreSE/resource/icons/cursor_twistMinus1BP.png b/AdenitaCoreSE/resource/icons/cursor_twistMinus1BP.png
+new file mode 100644
+index 0000000000000000000000000000000000000000..588464653aa1ebb210d605718db3aeed42c6d0e1
+GIT binary patch
+literal 16823
+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
+E317%W2><{9
+
+literal 0
+HcmV?d00001
+
+diff --git a/AdenitaCoreSE/resource/icons/cursor_twistPlus1BP.png b/AdenitaCoreSE/resource/icons/cursor_twistPlus1BP.png
+new file mode 100644
+index 0000000000000000000000000000000000000000..b548c72d88cb786b98280cd822637e7a648bfdc5
+GIT binary patch
+literal 16795
+zcmeI3c~leE9>+&5NI?*+MO4HPwNxSd9zp<#Y!XC_2vw?+%m6VY6OsXf`eYFlTYWA?
+zKnu1-ZGmD1q@tn^i%VUr)h^Z*7ZjCRtcp)5@+Pct#5tbVzVps|XL7R4@BZ%h_nZ5<
+z_x@(`$E=J953;u%V+#O)eMqn@68m+-J`x*i>^n(e`w8~*ram~v2mlU;%%4FUJRQaY
+zfcIBwMKl^M4-=~pEgggqB}_MI^;mCA>}%44Dh-TMlyJOS=R^IiuAWL!Lq60wJULUY
+z4}cTY!HW#=tVQ7p)gp~b1W|pZwi1&V3!sHjkYds%>WpHO549_<7&|sMGpLlVE~v(b
+z>Tga+iIzuD0uTdC;nDdt6^p~B2t;%iPsA2-y(nxZi_c(k87vWv#Svp~E|b#pqDpPC
+zBZ&cu6GzGdd(vT+4>bWr^<oAiH8qu<%Aq5McuX!5F_>%yn@z)d(2Qw16g1Iv#tGd)
+zdgI7oqspMxqiRG)F~<d!NHXd}rJ57<y?Vx_)%PXR8GG1a6d5K^&tTD+jDbXus!yX&
+zHY9eP8l+;tiLe&dp+-!{8c?TCKv2Y(fV?7QpZk@Gu{n{;`*II>zFO^osg3Bg6bwNR
+z(gBr5MVcOFM8ZZS*`R`_rC>vuFwp2xbzJ}Cyb#IkdF8poCiN?1W>2@QYbkWkkOUj6
+zIKTjdC}L0`NTRfRl|}R-qyz+*R~3)Wqr5vut%HzM<75c~FY2H1{&=tqL}4kW715Y%
+z8k4VJF~vN-n9cWOvcycLMUd{ExEOK-QpcrP#NgA|JO#F-+1RRPc{163F)VuGV_-W7
+z0#Wd_qFDB|hy$s_afm?+qEfXMjE5O|UA%<R-)PaZZ(WH4kVM3Qofa(RNEib(Td2C$
+znm9yfL_wVj4v|T*2D(}eiMc|dfXxx|X-bh2q6t`BB~8g@Lo}X{6UPC$OfU}ObwQNN
+zE#)tTmLaNS^M1iXcb66jQDNcxPfG-<I6S^eKobc#N*ap=i)cb7AEJRGHX9VMRdAe$
+z-<!xH*h`6K7}Qwh0~0O!n8yNP$@rj>4Jx^88ix<Du@PWLBDRuC6M;%tDHL!-N?6dF
+zVt_C&r3zLXvGtl}v5v9T+*R9V!AUQ+_Bs;PT{TJ%8jP@c2l`NZw_smU>#JF2P1jBq
+zgDP`%ld8-c1coGx7h3yIt54Y@Q@=c&uZN&JzJ>hNIZ_i~9ntpc4%OA`)j^C%9GVIm
+zVE=e*g}mP0?~ePT5T8K8FkcT6)&GI1FoG$6ZX!4;hzT)8Dw>i9VOvVT1!*E!$f99w
+zoH!*{#1ycx<^CrpLLlaHd+XePb0YdzvMK@8#lw)4(L1)@hX19xd%c?Y@6FwS*O&i`
+zx$EAIFIL9hYWs2}m6&fY#8?%^DgxM5{a6ylOKttDrn`T%xtb;>cl8(Xnb?cLGJp3-
+zE!}u&46)SGjhFT-XY16cl--jJ*KDCO-vf1Do@ZgV>#&s1<8iR7D83o5h)|p0#Auls
+zyN(*o*8>hVt}YGUF`zJ}U&wz!XyND)c2AYXjdfQA?QX?x+p&KPjK04NFBR9mtI%J0
+z&_ANTGAb?>nFI%f*d%cg^TByZTsR=aCW(uf56(;C!T}*RNnFHya9$D@4hXSH;v(jQ
+z^OCr5K!{Be7cn24m&AnwLTr+_i22~WBrY5fVw1#0%m?Qsap8avn<Oq`J~%Il3kQVQ
+zBykb*!FfqsI3UC(iHn#I&P(FL0U<U?T*Q2EUJ@4$2(d}xBIbkhlDKd{h)og~F&~_l
+z#DxPwY?8Q$`QW@HE*ubIlf*^L2j?Ym;eZgEBrak;I4_9{2ZY!paS`*uc}ZM2AjBq#
+zi<l42OX9)-AvQ@|#C&jG5*H2#u}O%_w*MhqScg4%n~FVR+p(sy4SPJ7q6&_b1Hht5
+z0Fbc^0G@VYzjpv2nF#=Q7XW~`5CBFY>*pU11OTh}5ShQibfM+vxnZ+XU5B=Q@?G}j
+z5#wuXeOeCh_nMo3a(4n6Q?$(A%46NBjfr-9zp0=W?7Cevb#W*%@4{K?nX^;pHrA9J
+z4OH7Ty|>mot8wJ&g2`7tALOLiN@=Pc#Y)k;=t>wJ9`!38`W}0FvuH_rz0rX}-S<Hj
+z#Wj1G-qE4KUuZM*TAyKhS{WVlh7xvK%Rczb_2C1}smnu3s}%1~KVH3b%9-;E{F}~a
+zM6&!!wSEgnJKj6FwxY_{x2XK<!DaO2+}M@vw~A-VWc!j9zoFj#%Ou4{zao{xyJh7r
+z4uzraha+r%ceTr{>2z|2Hc~=98!E1?Ip-@_k(;};(>2sE-TR}FiyWbio1J~n*`R?=
+zhw{&7YN|8msX96<qvu>N{#`zSdOZ&rb9nCvWc}3Pe|Wv+I69D$m*ZFdq5tRA2TnVC
+zyK>o-xgmv-&V!#+T3xq0;g_$n+H+x8d(@clynF7ngEsTt8d5bW$nUdV8DU>HR0eCb
+z;ZZJr<@|uGm6?Bw^FBJ?+Upoi8y3|(=i#}BKOGqx>i*NS5%*2MuN(e!<LA>um+il@
+z<PdLZ>8E+me@s|hT(G&5H6yR?LC}}>yQg`sy}NSg@T$@h=b-y?3RStic5(j4<(i5L
+z<lv^|;bCVv4cV>_gO=>cEGY3hUr@Sh$0GOEmKLw?o^=T8j~w|;r8#})i*IN1JlxKW
+zxmUb%)DGq1tD{HWaXD<4*{NN<YW0mj@&aUDWsfc`)fIlCT|RLe7}MH#X5uYxYi8#Y
+zPW0upx5qxyEr>nMw0)fXM7VV)b5-g0f0O@EVRw5@l4$F>6CuW(2dVGb?n8N7?;O9I
+zpLMT&$EQD--0Eh`XuR~%_u_h&pc@+^8g@=uUXxz^5u&*?-{f$^ewoXIfTwj8m3g6q
+zGNT6_i^;zdf31DEM-r6i>f}@$dplzO)vV`x4s^s{vpH_>dZj8hX)oRDuK(8KD_Cf)
+z*2gm}ltY<W;^e)5zwxwndB@GsHKI+G$e9(AU*CkvHw|v<d^2bSJ=bw}{nbgDvi7Fd
+zvU^EsLtNHHZGm#0oZV~B|04C9Ex(SItl6-cUsHo_dE7jy;!%xN3nRmdo=aVrF#!#5
+z*|AV7ymP58w)q1veZ1!6$<-IPROpjB767|Ox`ym_551W=u8iln;no`tO$&w>T)E{M
+z;}!PMFS)(7y7ApiyA+#wj<oWeql)3#D;I*A@)hIwZb@>wmEdvgT<3koXh315!>+UP
+z%AB?a>k!XGCqexwTMg}7MwoPyGUsw^L4j2|Jt0djvs)6ltKppzEB^ZJtyaHOZg^X|
+zcC*LbX5Tts^9-ajXI;j`o!i7w5jJ^it)<%l?46b8&rNzHk1F&$mOf)P+H!x(<oO2<
+z-)evSQ#0iETlJ#{KV~cJp|c?rCp&+tb5@aab_?}{x=j&3_S&big6~Dln&v}nMbVKH
+zweRG+Zd<kGPFxXle9Ek0GRN@TiRF~Qlt&$>e2dRit_dr13*Or}ZuVyF54A^+O45=>
+z8mCw%J*!Hei8?shxda7ax{@;6f3Cl3^V#6jcbivTm7Z^neKICW$f_GQf<2w`zWRC;
+zzlQeQuv_xM?Hy}wJUZEuW!%0$z0rNo^N)p~^iV{T<CNBYPX4=XOAh_L_~MAWzg(Pr
+zNMP^&kI^Pgi_|qTrtruuU6HA>@}PC+z7MGZj5hm@oTc^Szle8JeOu-pHginP$2qhE
+zZ{L~P7JOVfY?9=jFz?|-eZ&5Rb){qSpK%BIW&a%a2j!?T!{eCz7=K*d&BXf+%iEr3
+zR7a&!I`u;?%qtEaC0y~u=0wZ2>>FQd%aS!Ek>wLFw*6ctQaoPh(3F+y@%Z@C3(wtv
+Y=2Mwfr(<ogatr_=)52w6O<j=nFBQ;1cK`qY
+
+literal 0
+HcmV?d00001
+
+diff --git a/AdenitaCoreSE/resource/icons/emptyCursorCentered.png b/AdenitaCoreSE/resource/icons/emptyCursorCentered.png
+new file mode 100644
+index 0000000000000000000000000000000000000000..14dd54c505a17027635a5f4fecd39f69957afa75
+GIT binary patch
+literal 16254
+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
+RbDk&UlM_;m2PS8}^)DfEOe_EZ
+
+literal 0
+HcmV?d00001
+
+diff --git a/AdenitaCoreSE/resource/icons/icons8-hand-cursor-40.png b/AdenitaCoreSE/resource/icons/icons8-hand-cursor-40.png
+new file mode 100644
+index 0000000000000000000000000000000000000000..3dc738d13f35ab6041b0d03171f7d83b5ce294f6
+GIT binary patch
+literal 955
+zcmV;s14R6ZP)<h;3K|Lk000e1NJLTq001Ze001Zm1^@s6jQ+T700004b3#c}2nYxW
+zd<bNS00009a7bBm0009x0009x0VaKmTL1t68FWQhbW?9;ba!ELWdL_~cP?peYja~^
+zaAhuUa%Y?FJQ@H112{=UK~z|U?U-9g6k!yA&p)#>Ym=^<;X*fi=msT0^^%xDLghn3
+zg$ZS3h*1RfU<tV|O%_RQqG?&dmZe?H$moKR5EThx6h&cJ5o;kExtXPVpUdf?+KSd@
+zW@mTvVZXOCb7syrGygyTnE@E%5G~0(e~Lr1u^I_k_k9btj!4|DnzBM)EaU(H3|f-W
+zoMf9eIepXG6-zh-fVPg#;(n(~0)QQ{(F35gB+H0J1$j%k38^WNmYM<uD|0vm+!!l4
+z0F8ozD5j>Sj1R?TQ!)ev(HwQF-_RuZKS&7bB_XJngrHtDtt6vSS>J4vQ7(~Xq$ol)
+z_Do7DzfxEzMdRF25zLrk*^!@{Wuyp!s~w$N(diQQ);9Sm8n#K2%<7TWEts`nF68Gf
+zHWKo^?^wTT8F#SZLfO<w7NH<7XB^8gaO+-oDLVRpNy|vbq|w-8v!fcip1#CjPzc3>
+zC?a2X&U5r^oBzYWAP&1d*w)ecWpC}d`l!ii5e&!U7q8Ic^M_(tmT~{F^Y4^uMr91D
+zVNvGnKVm`%7z{L{bljMK%_Ic%qDqkGdCFRSrooiVxx?+RIC5H3tOZq*Bxstp%aUeZ
+zzkNe~a>SJ)L{V_J?SzFU6koh%Ima+@oAe<RA8``JZl6DA2AEB8zj*+lLeRi4MGG@$
+za`BJ}hoYb$h#8iNG5v7+CyIgyNDMR`50|hg3K|*agY)BHJY2$}d<O|!fAqXJD$Qpk
+zC<=PL!tobx`rz}|k$Ct-24C0Ia`DDpG2&ip6sk^Maw^qUwbY4$Kt<1+KK%G;NdMLT
+zhKwjH<){)oP`<^%Fzneo4<AQuEQ+E8k|_C=@>F*-0k>d%-PbR^cMj+?`@!?q4!<Bt
+zH<j{K3szZ6Tr6$a*LwRwP!L32a$a8m+V6J{%Q88l>qLKnNGj`_JMEX-10Jtmc@~6W
+z*zHA|y>-A^eR{K+lA8We0|4-RV-ifH8wrrrSqtW}^JYz_($mbq7)D=hBw2>Rp<#H|
+z`*x)3Nsr$b6m}jeFKvm5;7=+J+p}4gDMP?)L6p)Fan#{L(^P<E430ohyoLd&sj`;1
+dBCR{-_yz;|D|Q}^--ZAH002ovPDHLkV1nK}ski_D
+
+literal 0
+HcmV?d00001
+
+diff --git a/AdenitaCoreSE/resource/icons/minus1BP.png b/AdenitaCoreSE/resource/icons/minus1BP.png
+deleted file mode 100644
+index 300b70e611b3e43dcf94921cb5f9a9eac15c68dc..0000000000000000000000000000000000000000
+GIT binary patch
+literal 0
+HcmV?d00001
+
+literal 1405
+zcmV-@1%mpCP)<h;3K|Lk000e1NJLTq0015U0015c1^@s6J20-I00004b3#c}2nYxW
+zd<bNS00009a7bBm0005o0005o0axXR9{>OV8FWQhbW?9;ba!ELWdL_~cP?peYja~^
+zaAhuUa%Y?FJQ@H11o}xtK~zYI&6j;lRdpE0zvukUy?8Gdp&RF3UX_<IEEI8~V}=`=
+zyCpP}6~<adD>G}Ym8okjqx>sZZLN)_OLA+z1xqu=8u-Fpm@+KEx`3M=kO?^MxmOVG
+zx#x0T`$M?n-V1pVSAG9F=Xsvr^ZA|M+j)Kz=BT=g3X;L|tVW0p0BBWp-(*>SOMSgM
+zmpoK7LG2Dlx<=D4F@(HG3<j&wWTFfvQw(%nmji(bNfe>VvR6~pV_G0^q{!(Um>0O+
+z;Yg<#=Bt?4*fnfM2D{L1Co~~5#;S^fvEgCW)8Ef4et&B~6yIBO{`}ya!M~T5zC#%1
+zqqJqq5-o{|QH{)$d_1q;a=AR}#Kfnonwn~&0=JZuFmZ8l-^W?4W$DY8FQlkBF@w@H
+z4Y#gd9rJm;4ZUV_Rrng9!yCkz&9&^}#m_D(D0pBf0MImz#Vb}Uv}I;)&hq;Yh5JJ$
+z>~d-8?njc7Ur%1LB<_KUVT!d{jglZ_ZcRy1zP*0^Vz6UV5A6;|x?#bBohf;F@%KwM
+zJU$MO&lfd3H7_sT$S}Juu3w)T0VYP{!L+4I?Z0vyntFQvG0_{xkK@CJhN!_5O(Q)&
+z-)1zK4u*i=&dz?~Ajhp;RZ~MfT~mV#92a%cXl1rqDTB#WczMHytRT4C=i7fh5QwcV
+zEk&-)_RyhIvS($ny20=Y05AZszp(Jp$Jec+XhQJixpPq^nNSqGfAS<6TrMP9EZ9+8
+zjF(rh1^_g6b>X{9m#{fMA74A27!gI3<mBM<O`B+%kmmt>%(Rr0FpSX{Kii2kn@)Ci
+z;sb{R2P!Mk%5m6n;sjFT<MCu}F75~de(COpD9hNpaU<@EBKDj<4Th%iZc<W0T}1_9
+zVrbfKjER|X!_sMKpwrSK>{MMHo>{vV)z#Gi00)3S1px<KE<9CL1>*I>KnQ-^whbnO
+z0RZ5aW$Zb13U8H{Q(0qUHii(AY%rUd*}zOuQ6xAa0SR_{h_AS;47IhjV2X-BU%LjH
+zrh`xbD9Oozq^cN_qy@>6lyYx7&EtfclEGj=AP|_<Z=9S;Nz(uTj0_CPe!o0Zur@FN
+zrL8T(u8)pF0YZF#wX`6UWudgSLE|_;*F)O4Zr=s~*a(@Rb$yVLW!Wvw(o=0<0NOz0
+zuT>u%#m^lbaAs$tI6E5`I1cq^&ftskawu(WP&p10ih^%iTk&RbG2A{MK5K5qhTL4l
+z>$-k}WqD?u)2aMXRyLw4N-|+)oaz}>l#zi~j~<0r5a5?2JXcVFt&`gc02rFaZ@s<v
+zq_Gi#Bw>-&io=zaP`bN4Tk7jo1^{GD`(fPe-kXq;!nE(+eP8HL+qd5v5nTu8@c;mF
+zST-bvP!x_<Re|^UFm(4W9!pAsFg&abD#~$S^5oJ)@fhFV?~VF%Cq+{fa#%J3I$f;A
+zg5{~HFcJd3ug?orJrM-2aXN2Eg3#*oc(l2~qt!UitCA?TtU7zPHwXp*O_p~K_Vl>*
+zu+{h=dST^C^zGXheAhJ%LtR}SSrm6o*@EEJ&CRzILD<`W<;uu>!A3%mU@`^YZ+3Ky
+zsEV>{dhr)h`V=-b9TM)`X>fC#f4=Z3@f;`kM@CMsY-~I--5#-j#{K@+(A%p8#>UFh
+z3kukI6?>hX{J6){&}Xr15BL9n%G>GsPYU|*4*aWEn3?pjE^U7U@&HP|0GIL000000
+LNkvXXu0mjf_*IbU
+
+diff --git a/AdenitaCoreSE/resource/icons/plus1BP.png b/AdenitaCoreSE/resource/icons/plus1BP.png
+deleted file mode 100644
+index ca07fbb3c02b8fd2d2fecdcc0fd4e6028a6dfc58..0000000000000000000000000000000000000000
+GIT binary patch
+literal 0
+HcmV?d00001
+
+literal 1478
+zcmV;%1v&bOP)<h;3K|Lk000e1NJLTq0015U0015c1^@s6J20-I00004b3#c}2nYxW
+zd<bNS00009a7bBm0005o0005o0axXR9{>OV8FWQhbW?9;ba!ELWdL_~cP?peYja~^
+zaAhuUa%Y?FJQ@H11w%<hK~zYI&6jCRR96(o|L?vx3p2<JBg1Cc2FMH|?hA;dq%kp8
+zi>586)&}a@C2bRlO>1fijs2jliT%=~B$isG+KMqHwoPm_R8erlrGN?wQWgaU<_*Iv
+zZ{}_N08D`yS+r^U|8(Cy_nzOq=iPI2E`@0-|3p5mbtM`lL5>6f!ce^~ZJV`XLxngU
+zKh#tPZ7wT{V;IfrG)2FrWN3p%9YSf<DitV7c6vCkhx5QE3jLBK9&>s5^6$5Q-uX=6
+z&1FS#N=EzT42@>FIWFEfE5b-KG#zv-FNo;s?-iRn+O1B`Q|%U=JC76|?3y-s$Kj9P
+zSE^KdmYLHcq6~&9MP@|ZHk*8<=}w=Q=RZAE@Yz>W0_T>LFqRbQNOZViP3G)5VT76%
+z(=SPqP<yAr(ao}_ZK}J4<IeyYKf#<Veq)JGShqYq<EfzlKnOwhoVj6^xP<iv&T?qH
+zeasJg`)Kh8@sZKn=Ow4icxvJ}Me6lRr^l0&x_XgNcj`ioe_<ny&1FS#N~NM`VX9d-
+znKRm}f{{caS)YV(b@-(4#b&ckMHIUVzS}t~0IXJqmS$SgquL(ypt<phhY<j9{BRX2
+zPu9YuOM*eIpA<|eg3R>v$Pf}*ItHA#``zr`#=)F#51geA9Xx}!`#qC7o30|l^psYu
+zUc9C3Ba<KOu?hPnC#7APw*bcINhAH#N{df4G79Dm0AK(hIXiOZy6hZ^rU|OgG)&0}
+z&+|C&bve#mx(bz+L1wN6i?UJx0Qdgrz?F;5$XJkoi{~2QcJoLvM`P7XiwO<#3V>oJ
+zx1@woDrg-|2V~ZSI$M1WTVKt?TW_wzrJJ{K>SzsgdJR(2V&Qgq(cI7lffuoI?E-Kf
+zAAUJ`9TXu@r7-&Z6Ztd~pEMAq35f}su;J?Ppod36t|DjId~Dye9<0}nj0_V7dOWy&
+zu^p?jveBurgC+z8?>rBMf*FdCPr%O=*N|hjP%1Vxl92^Pj8>&)f`JWcJxsc!AYcVT
+zwVI*Dsq_d}>5(;eJ}S?ghe?-&J0YE*Xvz--0FyZeq9_3#sA(d_5&(FH3(7Bsrs4JR
+zPqfp_&|M`;($IJX@W{n^g3hpUb^s3p`gw_mBn~-Xy>_r1i(B{aA;K7j)`5qxdaRIT
+zdCZ*dM>YU}tdhMH#4e__L(?0o@daHa%ducNHV9b2`O7zOv!MyPI3><qzl@sN2CUt%
+z1TFT5=ymr&6eQGC-9=We1<pYZRln9FH7yn*CCV;so0a*!q(rck7qh%5#3<;XzdESq
+zrlp|xi&C%y4tRY$G8QFb;cz+u03j6qZ0W^sl{dlrc<5(_;^l%Y)U?$1Rcx#fnc>j=
+z*k$eeBr!Ugd2dhNq|n_TZh}dd1WA@r+f;}4!A?X(hK(6R5egf(JqPC?2Z!B_s8~JP
+zt-XREiN}HAo6GByk2Q6)_fL7dBfFv~#Kg=DfR0w^3^iio44`R(rjE9LNfdwZgUh$=
+zd*I^S)sJm9X}a*K>T!Rc==5+^Wn1>O0>f7(0C;&<(T)4}R;*r<6-~&*`8E2q54Fc?
+z-cl3N=EwWLC0RmUb5kEDJ9mxr`3r$tm9>s}FRmD{IR|qRqM|}30&@Zfma~K9?BE10
+zz)lDSh2rlTqq_b!>u|YumKE;56aWT*x}PrGNPA)FY*0uw>hy|<;8Rs&TbrxBr~6cC
+z;oiNY`vdZ)sfFGu$*q#j;aIagJ;V4c#a>Ngz4bBMf7-5Y-Z9?(|0!=r>pv;z$1mVt
+geZmCOKlNz)3)lit1<R!&4FCWD07*qoM6N<$g2Lps=>Px#
+
+diff --git a/AdenitaCoreSE/source/SETwistHelixEditor.cpp b/AdenitaCoreSE/source/SETwistHelixEditor.cpp
+index d964811..83a42e0 100644
+--- a/AdenitaCoreSE/source/SETwistHelixEditor.cpp
++++ b/AdenitaCoreSE/source/SETwistHelixEditor.cpp
+@@ -26,6 +26,15 @@ SETwistHelixEditorGUI* SETwistHelixEditor::getPropertyWidget() const { return st
+ void SETwistHelixEditor::SetTwistAngle(double angle)
+ {
+   twistAngle_ = angle;
++
++	if (twistAngle_ < 0) {
++		string iconPath = SB_ELEMENT_PATH + "/Resource/icons/cursor_twistMinus1BP.png";
++		SAMSON::setViewportCursor(QCursor(QPixmap(iconPath.c_str())));
++	}
++	else {
++		string iconPath = SB_ELEMENT_PATH + "/Resource/icons/cursor_twistPlus1BP.png";
++		SAMSON::setViewportCursor(QCursor(QPixmap(iconPath.c_str())));
++	}
+ }
+ 
+ void SETwistHelixEditor::SetMode(bool t)
+@@ -91,8 +100,14 @@ void SETwistHelixEditor::beginEditing() {
+ 
+ 	// SAMSON Element generator pro tip: SAMSON calls this function when your editor becomes active. 
+ 	// Implement this function if you need to prepare some data structures in order to be able to handle GUI or SAMSON events.
+-  string iconPath = SB_ELEMENT_PATH + "/Resource/icons/plus1BP.png";
+-  SAMSON::setViewportCursor(QCursor(QPixmap(iconPath.c_str())));
++	if (twistAngle_ < 0) {
++		string iconPath = SB_ELEMENT_PATH + "/Resource/icons/cursor_twistMinus1BP.png";
++		SAMSON::setViewportCursor(QCursor(QPixmap(iconPath.c_str())));
++	}
++	else {
++		string iconPath = SB_ELEMENT_PATH + "/Resource/icons/cursor_twistPlus1BP.png";
++		SAMSON::setViewportCursor(QCursor(QPixmap(iconPath.c_str())));
++	}
+ 
+ }
+ 
+diff --git a/AdenitaCoreSE/source/SETwistHelixEditorGUI.cpp b/AdenitaCoreSE/source/SETwistHelixEditorGUI.cpp
+index bdad2c1..7fa046e 100644
+--- a/AdenitaCoreSE/source/SETwistHelixEditorGUI.cpp
++++ b/AdenitaCoreSE/source/SETwistHelixEditorGUI.cpp
+@@ -38,6 +38,7 @@ void SETwistHelixEditorGUI::onMinus(bool checked)
+     SETwistHelixEditor* editor = getEditor();
+     double angle = -ADNConstants::BP_ROT;
+     editor->SetTwistAngle(angle);
++
+   }
+ }
+ 
+-- 
+2.21.0.windows.1
+
+
+From dae29a990246d0b7b6c9bd9e2fe44390f20e3683 Mon Sep 17 00:00:00 2001
+From: Elisa de Llano <elisa.dellano.fl@ait.ac.at>
+Date: Wed, 26 Jun 2019 12:11:27 +0200
+Subject: [PATCH 3/5] Minor changes in readme
+
+---
+ README.md | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/README.md b/README.md
+index 1526ca2..c8675c1 100644
+--- a/README.md
++++ b/README.md
+@@ -9,7 +9,7 @@ if multiple Qt versions are installed then the best solution is to set the envir
+ 
+ # CMAKE Commands
+ 
+-cmake -G"Visual Studio 14 Win64" -DSAMSON_SDK_PATH="C:\Users\DeLlanoE\NANO-D\SDK\0.7.0" -DQT5_CMAKE_INCLUDE_DIR="C:\Qt\5.9.3\msvc2017_64\lib" -DBOOST_PATH="C:/Users/DeLlanoE/Documents/code/boost_1_69_0" -DRAPIDJSON_PATH="C:\Users\DeLlanoE\Documents\code\Adenita_thirdparty\rapidjson" ..
++cmake -G"Visual Studio 15 Win64" -DSAMSON_SDK_PATH="C:\Users\DeLlanoE\NANO-D\SDK\0.7.0" -DQT5_CMAKE_INCLUDE_DIR="C:\Qt\5.9.3\msvc2017_64\lib" -DBOOST_PATH="C:/Users/DeLlanoE/Documents/code/boost_1_69_0" -DRAPIDJSON_PATH="C:\Users\DeLlanoE\Documents\code\Adenita_thirdparty\rapidjson" ..
+ 
+ cmake -G"Visual Studio 14 Win64" -DSAMSON_SDK_PATH="C:\Users\Haichao\NANO-D\SDK\0.7.0" -DQT5_CMAKE_INCLUDE_DIR="C:\Qt\Qt5.8.0\5.8\msvc2015_64\lib" -DBOOST_PATH="C:/Development/boost_1_63_0" -DRAPIDJSON_PATH="C:\Development\DNA_Nanomodeling\Adenita\Adenita\thirdparty" -DPYBIND11_PATH="C:\Development\pybind11\include" ..
+ 
+-- 
+2.21.0.windows.1
+
+
+From b326fa43fbc891f872a31e65808755afd7d68b9c Mon Sep 17 00:00:00 2001
+From: Elisa de Llano <elisa.dellano.fl@ait.ac.at>
+Date: Mon, 22 Jul 2019 14:02:18 +0200
+Subject: [PATCH 4/5] Added overwrite option to generate sequence
+
+---
+ AdenitaCoreSE/include/ADNBasicOperations.hpp   | 2 +-
+ AdenitaCoreSE/include/SEAdenitaCoreSEApp.hpp   | 2 +-
+ AdenitaCoreSE/source/ADNBasicOperations.cpp    | 4 ++--
+ AdenitaCoreSE/source/SEAdenitaCoreSEApp.cpp    | 5 +++--
+ AdenitaCoreSE/source/SEAdenitaCoreSEAppGUI.cpp | 7 ++++++-
+ 5 files changed, 13 insertions(+), 7 deletions(-)
+
+diff --git a/AdenitaCoreSE/include/ADNBasicOperations.hpp b/AdenitaCoreSE/include/ADNBasicOperations.hpp
+index ee27beb..b3353b3 100644
+--- a/AdenitaCoreSE/include/ADNBasicOperations.hpp
++++ b/AdenitaCoreSE/include/ADNBasicOperations.hpp
+@@ -32,7 +32,7 @@ namespace ADNBasicOperations {
+ 
+   // Mutations
+   void MutateNucleotide(ADNPointer<ADNNucleotide> nt, DNABlocks newType, bool changePair = true);
+-  void SetSingleStrandSequence(ADNPointer<ADNSingleStrand> ss, std::string seq, bool changePair = true);
++  void SetSingleStrandSequence(ADNPointer<ADNSingleStrand> ss, std::string seq, bool changePair = true, bool overwrite = true);
+   void MutateBasePairIntoLoopPair(ADNPointer<ADNBaseSegment> bs);
+   //! Shift start of the strand to the selected nucleotide and sequence.
+   /*!
+diff --git a/AdenitaCoreSE/include/SEAdenitaCoreSEApp.hpp b/AdenitaCoreSE/include/SEAdenitaCoreSEApp.hpp
+index d53b75d..767d91c 100644
+--- a/AdenitaCoreSE/include/SEAdenitaCoreSEApp.hpp
++++ b/AdenitaCoreSE/include/SEAdenitaCoreSEApp.hpp
+@@ -47,7 +47,7 @@ public :
+   void ExportToOxDNA(QString folder, ADNAuxiliary::OxDNAOptions options, ADNPointer<ADNPart> part = nullptr);
+   void ExportToSequenceList(QString filename, ADNPointer<ADNPart> part = nullptr);
+   void SetScaffoldSequence(std::string seq);
+-  void GenerateSequence(double gcCont, int maxContGs);
++  void GenerateSequence(double gcCont, int maxContGs, bool overwrite = true);
+   void ResetVisualModel();
+   SBVisualModel* GetVisualModel();
+   // Modifications
+diff --git a/AdenitaCoreSE/source/ADNBasicOperations.cpp b/AdenitaCoreSE/source/ADNBasicOperations.cpp
+index a2ab80b..bbe44dd 100644
+--- a/AdenitaCoreSE/source/ADNBasicOperations.cpp
++++ b/AdenitaCoreSE/source/ADNBasicOperations.cpp
+@@ -492,7 +492,7 @@ void ADNBasicOperations::MutateNucleotide(ADNPointer<ADNNucleotide> nt, DNABlock
+   }
+ }
+ 
+-void ADNBasicOperations::SetSingleStrandSequence(ADNPointer<ADNSingleStrand> ss, std::string seq, bool changePair)
++void ADNBasicOperations::SetSingleStrandSequence(ADNPointer<ADNSingleStrand> ss, std::string seq, bool changePair, bool overwrite)
+ {
+   ADNPointer<ADNNucleotide> fivePrime = ss->GetFivePrime();
+   ADNPointer<ADNNucleotide> nt = fivePrime;
+@@ -500,7 +500,7 @@ void ADNBasicOperations::SetSingleStrandSequence(ADNPointer<ADNSingleStrand> ss,
+ 
+   while (count < seq.size() && nt != nullptr) {
+     DNABlocks t = ADNModel::ResidueNameToType(seq[count]);
+-    MutateNucleotide(nt, t, changePair);
++    if (overwrite || (!overwrite && nt->GetType() == DNABlocks::DI)) MutateNucleotide(nt, t, changePair);
+     ++count;
+     nt = nt->GetNext();
+   }
+diff --git a/AdenitaCoreSE/source/SEAdenitaCoreSEApp.cpp b/AdenitaCoreSE/source/SEAdenitaCoreSEApp.cpp
+index afe02da..0e87f66 100644
+--- a/AdenitaCoreSE/source/SEAdenitaCoreSEApp.cpp
++++ b/AdenitaCoreSE/source/SEAdenitaCoreSEApp.cpp
+@@ -158,13 +158,14 @@ void SEAdenitaCoreSEApp::CenterPart()
+   SB_FOR(ADNPointer<ADNPart> part, parts) ADNBasicOperations::CenterPart(part);
+ }
+ 
+-void SEAdenitaCoreSEApp::GenerateSequence(double gcCont, int maxContGs)
++void SEAdenitaCoreSEApp::GenerateSequence(double gcCont, int maxContGs, bool overwrite)
+ {
+   auto strands = GetNanorobot()->GetSelectedSingleStrands();
+   SB_FOR(ADNPointer<ADNSingleStrand> ss, strands) {
+     std::string seq = DASAlgorithms::GenerateSequence(gcCont, maxContGs, ss->getNumberOfNucleotides());
+-    ADNBasicOperations::SetSingleStrandSequence(ss, seq);
++    ADNBasicOperations::SetSingleStrandSequence(ss, seq, true, overwrite);
+   }
++  ResetVisualModel();
+ }
+ 
+ void SEAdenitaCoreSEApp::ResetVisualModel() {
+diff --git a/AdenitaCoreSE/source/SEAdenitaCoreSEAppGUI.cpp b/AdenitaCoreSE/source/SEAdenitaCoreSEAppGUI.cpp
+index 2c9cac8..46f157f 100644
+--- a/AdenitaCoreSE/source/SEAdenitaCoreSEAppGUI.cpp
++++ b/AdenitaCoreSE/source/SEAdenitaCoreSEAppGUI.cpp
+@@ -657,6 +657,10 @@ void SEAdenitaCoreSEAppGUI::onGenerateSequence()
+   contigousGs->setMaximum(100);
+   form.addRow(new QLabel("Maximum amount of contiguous Gs"), contigousGs);
+ 
++  QCheckBox* chk = new QCheckBox(&dialog);
++  chk->setChecked(false);
++  form.addRow(new QLabel("Overwrite existing base pairs"), chk);
++
+   QDialogButtonBox buttonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal, &dialog);
+   form.addRow(&buttonBox);
+   QObject::connect(&buttonBox, SIGNAL(accepted()), &dialog, SLOT(accept()));
+@@ -665,8 +669,9 @@ void SEAdenitaCoreSEAppGUI::onGenerateSequence()
+   if (dialog.exec() == QDialog::Accepted) {
+     double gc100 = gcCont->value() / 100;
+     int maxContGs = contigousGs->value();
++    bool overwrite = chk->isChecked();
+     SEAdenitaCoreSEApp* t = getApp();
+-    t->GenerateSequence(gc100, maxContGs);
++    t->GenerateSequence(gc100, maxContGs, overwrite);
+   }
+ }
+ 
+-- 
+2.21.0.windows.1
+
+
+From 64b4976134722cfbd9252afcc5e6a932cfab3ee4 Mon Sep 17 00:00:00 2001
+From: Elisa de Llano <elisa.dellano.fl@ait.ac.at>
+Date: Mon, 22 Jul 2019 14:25:35 +0200
+Subject: [PATCH 5/5] Added remaining icons
+
+---
+ AdenitaCoreSE/form/SEAdenitaCoreSEAppGUI.ui   |  52 +++++-------------
+ .../resource/icons/createBasePair.png         | Bin 0 -> 1394 bytes
+ .../icons/{connectSS.png => generateSeqs.png} | Bin
+ .../source/SEAdenitaCoreSEAppGUI.cpp          |   8 +++
+ 4 files changed, 21 insertions(+), 39 deletions(-)
+ create mode 100644 AdenitaCoreSE/resource/icons/createBasePair.png
+ rename AdenitaCoreSE/resource/icons/{connectSS.png => generateSeqs.png} (100%)
+
+diff --git a/AdenitaCoreSE/form/SEAdenitaCoreSEAppGUI.ui b/AdenitaCoreSE/form/SEAdenitaCoreSEAppGUI.ui
+index b3e8c86..d36259e 100644
+--- a/AdenitaCoreSE/form/SEAdenitaCoreSEAppGUI.ui
++++ b/AdenitaCoreSE/form/SEAdenitaCoreSEAppGUI.ui
+@@ -72,7 +72,7 @@
+           <rect>
+            <x>10</x>
+            <y>10</y>
+-           <width>531</width>
++           <width>560</width>
+            <height>91</height>
+           </rect>
+          </property>
+@@ -240,8 +240,8 @@
+             </property>
+            </widget>
+           </item>
+-          <item row="1" column="2">
+-           <widget class="QPushButton" name="btnCreateBasePair">
++          <item row="1" column="3">
++           <widget class="QToolButton" name="btnGenerateSequence">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+               <horstretch>0</horstretch>
+@@ -249,12 +249,15 @@
+              </sizepolicy>
+             </property>
+             <property name="text">
+-             <string>Create Base Pair</string>
++             <string>Generate Sequence</string>
++            </property>
++            <property name="toolButtonStyle">
++             <enum>Qt::ToolButtonTextUnderIcon</enum>
+             </property>
+            </widget>
+           </item>
+-          <item row="1" column="3">
+-           <widget class="QPushButton" name="btnGenerateSequence">
++          <item row="1" column="2">
++           <widget class="QToolButton" name="btnCreateBasePair">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+               <horstretch>0</horstretch>
+@@ -262,7 +265,10 @@
+              </sizepolicy>
+             </property>
+             <property name="text">
+-             <string>Generate Sequence</string>
++             <string>Create Complement</string>
++            </property>
++            <property name="toolButtonStyle">
++             <enum>Qt::ToolButtonTextUnderIcon</enum>
+             </property>
+            </widget>
+           </item>
+@@ -886,38 +892,6 @@
+     </hint>
+    </hints>
+   </connection>
+-  <connection>
+-   <sender>btnGenerateSequence</sender>
+-   <signal>released()</signal>
+-   <receiver>SEAdenitaCoreSEAppGUIClass</receiver>
+-   <slot>onGenerateSequence()</slot>
+-   <hints>
+-    <hint type="sourcelabel">
+-     <x>492</x>
+-     <y>104</y>
+-    </hint>
+-    <hint type="destinationlabel">
+-     <x>357</x>
+-     <y>148</y>
+-    </hint>
+-   </hints>
+-  </connection>
+-  <connection>
+-   <sender>btnCreateBasePair</sender>
+-   <signal>released()</signal>
+-   <receiver>SEAdenitaCoreSEAppGUIClass</receiver>
+-   <slot>onCreateBasePair()</slot>
+-   <hints>
+-    <hint type="sourcelabel">
+-     <x>282</x>
+-     <y>116</y>
+-    </hint>
+-    <hint type="destinationlabel">
+-     <x>288</x>
+-     <y>148</y>
+-    </hint>
+-   </hints>
+-  </connection>
+  </connections>
+  <slots>
+   <slot>onSetScaffold()</slot>
+diff --git a/AdenitaCoreSE/resource/icons/createBasePair.png b/AdenitaCoreSE/resource/icons/createBasePair.png
+new file mode 100644
+index 0000000000000000000000000000000000000000..47b30a4bc786a3d07bc2a413f80a982b582acca3
+GIT binary patch
+literal 1394
+zcmV-&1&#WNP)<h;3K|Lk000e1NJLTq0015U0015c1^@s6J20-I00001b5ch_0Itp)
+z=>Px#1ZP1_K>z@;j|==^1poj532;bRa{vGi!vFvd!vV){sAK>D1qVq)K~zXfwU&QO
+zTU8Xt@4fFq0hzKNvXShM#qnA;1`J*ai6ly5;*UQxGt1OJ)X9=*DX>WVWAP7@8e@zz
+z3l3>{%R)Ade{CTq+x#6JlO-y&AVHw?!El+8El3vygqHSR&v|_%l(rP6`y}Pud(M4)
+z-#Pc!qhtkTo*SEU<dBN(XoTJAcNY7Mz&(JO*1$r;yF`?B2~ICECN7xndqRS+B$H`E
+z#XK}~DJ4aAPoNw9cK6-cecG=fw5m4#hkDvugzY#9r7mvMEd>@aNd$#KbSj!HDh7@y
+z(`I<X>~{xVkp+3g+hjdb=W@y2E?2}1C1yN+ObLN#5Zi)?EmD|j_K!wg*tee=PHo@o
+zi`kQdG5f)QVO1^g^)HRqb3~@~m2UswN>L;sV?_1nCn=*XAPq4wMixR2Z%dg`x{ac`
+z1E;`T_cdD4CXkRZBFXGD2;RoFAapCq%}bb@^<sCAH9=lWsYH<^;oetw2S9QN+mP}$
+zB6zE+jl6^Xq%xajT`sd}D?KAYZ=<c9O5}}dPv8>zR+Cg}#P0Fis3ct#f^3HY3xe=2
+zufz6|8P166)<5GSa$=xq&yS`niKL7Xud`%K5Y_>&H7j6i!LVo4j==AkwwJ2;jU51)
+z9$<3Tm+;In?584S#>k=bLYkb>zlR|;Fv>y&xx+cR<eM(8Coam(VF{@1qlbmW>iQdO
+z^@c;h0;TX|3Q}f_TzHN~1<QX54iY~+8HRtcnaJXxeaA#l?HIp?W8#@sY9n~)5Gu>(
+zP!uxnfdeBeohXtv<2bdQ{!NP!`3oj^1+4N-;DV{=x0e1{d_J5j75W?Ybyaxu<5|(D
+z@HUs6Fdl+~h~Sy91{sAB<LyPk$Bc+4AcZaH6GDW14b~jHrVFn_p?1&MpPWjc_B(dB
+ztd(h;bqU9*I-|eHqNEj?+hQJAh$!mTr#K1M_cxY)Wx6wxc8*g)m!uH9>T))QXa{86
+zs1#+%5ZeIj${1JpZ!>zQVDxE_HA)?YQp-@%K8KQv<%W3=GD6Svy{5dmo>FJbxcrmB
+z`#`h@7S;<W3YQ0m3BGBGgq}oE9D|ut&ip(oE~BWiCNi+5aNXI-ob36$9!{wWwXuNU
+z0&L8A!syMPn#;Q5+o@a|ne#f8S}L&~<3awwH+T&i?KGq>wM($-?c?7HDr#Yv1%7`~
+z!7uOHsvO2WZjMT#%A<d`6c%p}y>9)%bfqM1##Ke*Z-Hn{Oq9$+iRWM<ccN&zBeUA0
+z-|lxRk6Ci)RaMhxD?EW_^rs?a#x<J0HzMd2n65(T!fK_TdmY6GW6{i1w2xY4Ccp1<
+zD$m00^iZGEdff~ylQLuYRB)T3u$08#T=3DfUn21<v2`eBJ^H(YO?v{AkpsBeIb&_;
+zUrkcRHQIy{A^aKy3SlwLz^BV`?@^`G46hr!nP4G43eA_j4T^D=uOumBPPx+%1t?*&
+zWNvZ72y75IPTO$n!LQeJC6KDrkK-S>jl!IgVIs?Q*iR~P+{R11y01-K1o1<Z(!Evi
+zv4_5uB$T@J{BU+&F#84^J3F9zi%HRkdyke(#-bZ%f9pVjl#?IyH7H35COGb&kspko
+zb+C09k4R_#%SXMOn?D8jxp9fC`9Ti{ekFLW;IRkH`y9$nGxWccSZeohzJ*$B*v?{N
+z;b(_3Vg&Az@(=wsIa|)hc1VQAh8s)gi~u3zUv%kGoJ>tqUjP6A07*qoM6N<$f;A<T
+AZU6uP
+
+literal 0
+HcmV?d00001
+
+diff --git a/AdenitaCoreSE/resource/icons/connectSS.png b/AdenitaCoreSE/resource/icons/generateSeqs.png
+similarity index 100%
+rename from AdenitaCoreSE/resource/icons/connectSS.png
+rename to AdenitaCoreSE/resource/icons/generateSeqs.png
+diff --git a/AdenitaCoreSE/source/SEAdenitaCoreSEAppGUI.cpp b/AdenitaCoreSE/source/SEAdenitaCoreSEAppGUI.cpp
+index 46f157f..fdc0d8a 100644
+--- a/AdenitaCoreSE/source/SEAdenitaCoreSEAppGUI.cpp
++++ b/AdenitaCoreSE/source/SEAdenitaCoreSEAppGUI.cpp
+@@ -46,6 +46,14 @@ SEAdenitaCoreSEAppGUI::SEAdenitaCoreSEAppGUI( SEAdenitaCoreSEApp* t ) : SBGApp(
+   setStart.addFile(string(iconsPath + "set5Prime.png").c_str(), QSize(), QIcon::Normal, QIcon::Off);
+   ui.btnSetStart->setIcon(setStart);
+ 
++  QIcon createBp;
++  createBp.addFile(string(iconsPath + "createBasePair.png").c_str(), QSize(), QIcon::Normal, QIcon::Off);
++  ui.btnCreateBasePair->setIcon(createBp);
++
++  QIcon generateSequences;
++  generateSequences.addFile(string(iconsPath + "generateSeqs.png").c_str(), QSize(), QIcon::Normal, QIcon::Off);
++  ui.btnGenerateSequence->setIcon(generateSequences);
++
+   // disable debug menu if compiling in release mode
+   #if NDEBUG
+   ui.tabWidget->removeTab(2);
+-- 
+2.21.0.windows.1
+
