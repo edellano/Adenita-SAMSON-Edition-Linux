@@ -16,34 +16,34 @@ SEAdenitaCoreSEAppGUI::SEAdenitaCoreSEAppGUI( SEAdenitaCoreSEApp* t ) : SBGApp( 
 	ui.setupUi( this );
 
   //change icons
-  string iconsPath = SB_ELEMENT_PATH + "/Resource/icons/";
+  std::string iconsPath = SB_ELEMENT_PATH + "/Resource/icons/";
 
   QIcon loadIcon;
-  loadIcon.addFile(string(iconsPath + "load.png").c_str(), QSize(), QIcon::Normal, QIcon::Off);
+  loadIcon.addFile(std::string(iconsPath + "load.png").c_str(), QSize(), QIcon::Normal, QIcon::Off);
   ui.btnLoad->setIcon(loadIcon);
 
   QIcon saveAllIcon;
-  saveAllIcon.addFile(string(iconsPath + "saveAll.png").c_str(), QSize(), QIcon::Normal, QIcon::Off);
+  saveAllIcon.addFile(std::string(iconsPath + "saveAll.png").c_str(), QSize(), QIcon::Normal, QIcon::Off);
   ui.btnSaveAll->setIcon(saveAllIcon);
 
   QIcon saveSelectionIcon;
-  saveSelectionIcon.addFile(string(iconsPath + "saveSelection.png").c_str(), QSize(), QIcon::Normal, QIcon::Off);
+  saveSelectionIcon.addFile(std::string(iconsPath + "saveSelection.png").c_str(), QSize(), QIcon::Normal, QIcon::Off);
   ui.btnSaveSelection->setIcon(saveSelectionIcon);
 
   QIcon exportIcon; 
-  exportIcon.addFile(string(iconsPath + "export.png").c_str(), QSize(), QIcon::Normal, QIcon::Off);
+  exportIcon.addFile(std::string(iconsPath + "export.png").c_str(), QSize(), QIcon::Normal, QIcon::Off);
   ui.btnExport->setIcon(exportIcon);
 
   QIcon setScaffIcon;
-  setScaffIcon.addFile(string(iconsPath + "setScaffold.png").c_str(), QSize(), QIcon::Normal, QIcon::Off);
+  setScaffIcon.addFile(std::string(iconsPath + "setScaffold.png").c_str(), QSize(), QIcon::Normal, QIcon::Off);
   ui.btnSetScaff->setIcon(setScaffIcon);
   
   QIcon calcProperties;
-  calcProperties.addFile(string(iconsPath + "calculate.png").c_str(), QSize(), QIcon::Normal, QIcon::Off);
+  calcProperties.addFile(std::string(iconsPath + "calculate.png").c_str(), QSize(), QIcon::Normal, QIcon::Off);
   ui.btnCalculateBindingProperties->setIcon(calcProperties);
 
   QIcon setStart;
-  setStart.addFile(string(iconsPath + "set5Prime.png").c_str(), QSize(), QIcon::Normal, QIcon::Off);
+  setStart.addFile(std::string(iconsPath + "set5Prime.png").c_str(), QSize(), QIcon::Normal, QIcon::Off);
   ui.btnSetStart->setIcon(setStart);
 
   QIcon createBp;

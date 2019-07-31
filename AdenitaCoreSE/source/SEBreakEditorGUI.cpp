@@ -4,10 +4,8 @@
 #include "SBGWindow.hpp"
 
 SEBreakEditorGUI::SEBreakEditorGUI(SEBreakEditor* editor) {
-
 	ui.setupUi( this );
 	this->editor = editor;
-
 }
 
 SEBreakEditorGUI::~SEBreakEditorGUI() {
@@ -38,18 +36,14 @@ QPixmap SEBreakEditorGUI::getLogo() const {
 	
 	// SAMSON Element generator pro tip: this icon will be visible in the GUI title bar. 
 	// Modify it to better reflect the purpose of your editor.
-
 	return QPixmap(QString::fromStdString(SB_ELEMENT_PATH + "/Resource/icons/break.png"));
-
 }
 
 QString SEBreakEditorGUI::getName() const { 
 
 	// SAMSON Element generator pro tip: this string will be the GUI title. 
 	// Modify this function to have a user-friendly description of your editor inside SAMSON
-
-	return "SEBreakEditor"; 
-
+	return "Adenita Break Strand Editor"; 
 }
 
 int SEBreakEditorGUI::getFormat() const {

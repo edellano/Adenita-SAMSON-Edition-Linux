@@ -43,21 +43,30 @@ QString SEBreakEditor::getName() const {
 
 }
 
-QString SEBreakEditor::getText() const { 
+// QString SEBreakEditor::getText() const { 
 	
-	// SAMSON Element generator pro tip: modify this function to return a user-friendly string that will be displayed in menus
+// 	// SAMSON Element generator pro tip: modify this function to return a user-friendly string that will be displayed in menus
 
-	return QObject::tr("SEBreakEditor"); 
+// 	return QObject::tr("SEBreakEditor"); 
 
+// }
+int SEBreakEditor::getFormat() const { 
+	
+	// SAMSON Element generator pro tip: modify these default settings to configure the window
+	//
+	// SBGWindow::Savable : let users save and load interface settings (implement loadSettings and saveSettings)
+	// SBGWindow::Lockable : let users lock the window on top
+	// SBGWindow::Resizable : let users resize the window
+	// SBGWindow::Citable : let users obtain citation information (implement getCitation)
+	
+	return (SBGWindow::Savable | SBGWindow::Lockable | SBGWindow::Resizable | SBGWindow::Citable);
 }
 
 QPixmap SEBreakEditor::getLogo() const {
 
 	// SAMSON Element generator pro tip: this icon will be visible in the GUI title bar. 
 	// Modify it to better reflect the purpose of your editor.
-
 	return QPixmap(QString::fromStdString(SB_ELEMENT_PATH + "/Resource/Icons/break.png"));
-
 }
 
 QKeySequence SEBreakEditor::getShortcut() const { 
