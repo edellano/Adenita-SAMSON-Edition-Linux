@@ -384,7 +384,7 @@ void SEAdenitaCoreSEApp::ImportFromOxDNA(std::string topoFile, std::string confi
   auto res = ADNLoader::InputFromOxDNA(topoFile, configFile);
   if (!res.first) {
     ADNPointer<ADNPart> p = res.second;
-    AddPartToActiveLayer(p, false, true);
+    AddPartToActiveLayer(p, true);
     ResetVisualModel();
   }
 }
@@ -398,10 +398,10 @@ void SEAdenitaCoreSEApp::FromDatagraph()
   SB_FOR(auto node, nodes) {
     if (node->isSelected()) {
       ADNPointer<ADNPart> part = ADNLoader::GenerateModelFromDatagraph(node);
-      AddPartToActiveLayer(part, false, true);
+      AddPartToActiveLayer(part, true);
     }
   }
-  
+  ResetVisualModel();
 }
 
 void SEAdenitaCoreSEApp::HighlightXOs()
@@ -663,7 +663,7 @@ QStringList SEAdenitaCoreSEApp::GetPartsNameList()
   return names;
 }
 
-void SEAdenitaCoreSEApp::AddPartToActiveLayer(ADNPointer<ADNPart> part, bool calculatePositions, bool positionsFromNucleotides)
+void SEAdenitaCoreSEApp::AddPartToActiveLayer(ADNPointer<ADNPart> part, bool positionsData)
 {
   SEConfig& c = SEConfig::GetInstance();
   if (c.auto_set_scaffold_sequence) {
@@ -677,8 +677,8 @@ void SEAdenitaCoreSEApp::AddPartToActiveLayer(ADNPointer<ADNPart> part, bool cal
   }
 
   DASBackToTheAtom btta = DASBackToTheAtom();
-  btta.PopulateWithMockAtoms(part, positionsFromNucleotides);
-  if (calculatePositions) {
+  btta.PopulateWithMockAtoms(part, positionsData);
+  if (!positionsData) {
     btta.SetNucleotidesPostions(part);
     SEConfig& config = SEConfig::GetInstance();
     if (config.use_atomic_details) {
@@ -687,6 +687,7 @@ void SEAdenitaCoreSEApp::AddPartToActiveLayer(ADNPointer<ADNPart> part, bool cal
     //btta.CheckDistances(part);
   }
 
+  part->ResetBoundingBox();
   GetNanorobot()->RegisterPart(part);
 
   //events
