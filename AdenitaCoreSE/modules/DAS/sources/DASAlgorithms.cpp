@@ -16,7 +16,7 @@ bool DASAlgorithms::CheckCrossoverBetweenNucleotides(ADNPointer<ADNNucleotide> n
       // check that they are "in front" of each other
       ublas::vector<double> df = ADNAuxiliary::SBPositionToUblas(dif);
       double n = ublas::inner_prod(ntFirst->GetE1(), df);
-      if (n > 0 && t < 0.0 && abs(t) > cos(ADNVectorMath::DegToRad(angle_threshold))) {
+      if (n > 0 && t < 0.0 && fabs(t) > cos(ADNVectorMath::DegToRad(angle_threshold))) {
         crssv = true;
       }
     }

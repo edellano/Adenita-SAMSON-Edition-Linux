@@ -1092,7 +1092,7 @@ std::map<DASHalfEdge*, SBPosition3> DASDaedalus::GetVertexPositions(DASPolyhedro
             auto v = vertexPositions[he];
             auto w = vertexPositions[he->pair_->next_];
             SBQuantity::length d = (w - v).norm();
-            if (ADNVectorMath::IsNearlyZero(abs((d - dist).getValue()), tol.getValue())) {
+            if (ADNVectorMath::IsNearlyZero(fabs((d - dist).getValue()), tol.getValue())) {
               ++count;
             }
             else {

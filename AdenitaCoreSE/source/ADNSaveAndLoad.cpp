@@ -1481,7 +1481,7 @@ void ADNLoader::BuildTopScalesParemetrized(ADNPointer<ADNPart> part, SBQuantity:
         double angle_threshold = maxAngle;
         // check they are complementary
         bool comp = ADNModel::GetComplementaryBase(nt->GetType()) == bor->GetType();
-        if (n > 0 && t < 0.0 && abs(t) > cos(ADNVectorMath::DegToRad(angle_threshold)) && comp) {
+        if (n > 0 && t < 0.0 && fabs(t) > cos(ADNVectorMath::DegToRad(angle_threshold)) && comp) {
           // possible paired, take closest
           if (dif.norm() < minDist) {
             pair = bor;
@@ -1595,7 +1595,7 @@ void ADNLoader::BuildTopScales(ADNPointer<ADNPart> part)
         double angle_threshold = 49.0;
         // check they are complementary
         bool comp = ADNModel::GetComplementaryBase(nt->GetType()) == bor->GetType();
-        if (n > 0 && t < 0.0 && abs(t) > cos(ADNVectorMath::DegToRad(angle_threshold)) && comp) {
+        if (n > 0 && t < 0.0 && fabs(t) > cos(ADNVectorMath::DegToRad(angle_threshold)) && comp) {
           // possible paired, take closest
           if (dif.norm() < minDist) {
             pair = bor;
