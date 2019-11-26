@@ -144,10 +144,10 @@ void DASCadnano::ParseCadnanoLegacy(Document& d)
   }
   else {
     // error
-+   if (totalCount == -1) {
+    if (totalCount == -1) {
       SB_ERROR("Adenita couldn't find a compatible lattice: design seems empty");
     }
-+   else {
+    else {
       SB_ERROR("Adenita couldn't find a compatible lattice: number of vHelix positions = " + totalCount);
     }
     return;
@@ -157,7 +157,6 @@ void DASCadnano::ParseCadnanoLegacy(Document& d)
 
 ADNPointer<ADNPart> DASCadnano::CreateCadnanoModel()
 {
-  ADNLogger& logger = ADNLogger::GetLogger();
   ADNPointer<ADNPart> part = new ADNPart();
   auto& logger = ADNLogger::GetLogger();
 

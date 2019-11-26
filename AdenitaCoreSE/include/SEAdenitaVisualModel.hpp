@@ -11,7 +11,7 @@
 #include "ADNMixins.hpp"
 #include "ADNPart.hpp"
 #include "ADNNanorobot.hpp"
-#include "SEConfig.hpp"
+#include "ADNConfig.hpp"
 #include "MSVColors.hpp"
 #include "MSVDisplayHelper.hpp"
 #include "PIPrimer3.hpp"
