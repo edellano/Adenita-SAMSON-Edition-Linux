@@ -3,8 +3,6 @@
 #include "SBMVisualModel.hpp"
 #include "SBGApp.hpp" 
 #include "SEAdenitaCoreSEApp.hpp"
-#include "ADNDisplayHelper.hpp"
-
 #include "SBBaseEvent.hpp"
 #include "SBDocumentEvent.hpp"
 #include "SBStructuralEvent.hpp"
@@ -15,6 +13,7 @@
 #include "ADNNanorobot.hpp"
 #include "SEConfig.hpp"
 #include "MSVColors.hpp"
+#include "MSVDisplayHelper.hpp"
 #include "PIPrimer3.hpp"
 #include <QOpenGLFunctions_4_3_Core>
 
