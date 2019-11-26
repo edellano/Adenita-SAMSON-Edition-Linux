@@ -155,11 +155,20 @@ void DASCadnano::ParseCadnanoLegacy(Document& d)
 
 ADNPointer<ADNPart> DASCadnano::CreateCadnanoModel()
 {
+  ADNLogger& logger = ADNLogger::GetLogger();
   ADNPointer<ADNPart> part = new ADNPart();
 
   CreateEdgeMap(part);
+  logger.Log(std::string("Cadnano module > Double strands created"));
   CreateScaffold(part);
+  if (json_.scaffoldStartPositions_.size() > 0) {
+    logger.Log(std::string("Cadnano module > Scaffold created"));
+  }
+  else {
+    SB_ERROR("Adenita couldn't detect a scaffold");
+  }
   CreateStaples(part);
+  logger.Log(std::string("Cadnano module > Staples created"));
 
   return part;
 }
