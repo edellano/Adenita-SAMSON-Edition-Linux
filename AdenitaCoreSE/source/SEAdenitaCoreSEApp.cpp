@@ -14,7 +14,7 @@ SEAdenitaCoreSEApp::SEAdenitaCoreSEApp() {
   if (config.clear_log_file) {
     logger.ClearLog();
   }
-  logger.LogDateTime();
+  SB_INFORMATION("Adenita started");
 }
 
 SEAdenitaCoreSEApp::~SEAdenitaCoreSEApp() {
@@ -195,7 +195,7 @@ void SEAdenitaCoreSEApp::ResetVisualModel() {
 
   }
 
-  logger.LogDebugPassedMilliseconds(start, "ResetVisualModel");
+  logger.LogDebug(std::string("Restarting visual model"));
 }
 
 SBVisualModel* SEAdenitaCoreSEApp::GetVisualModel()
