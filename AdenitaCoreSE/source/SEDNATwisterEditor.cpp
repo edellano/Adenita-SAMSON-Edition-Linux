@@ -10,7 +10,6 @@ SEDNATwisterEditor::SEDNATwisterEditor() {
 
 	propertyWidget = new SEDNATwisterEditorGUI(this);
 	propertyWidget->loadDefaultSettings();
-	SAMSON::addWidget(propertyWidget);
 
   forwardActionSphereActive_ = false;
   reverseActionSphereActive_ = false;

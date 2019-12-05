@@ -8,7 +8,6 @@ SENanotubeCreatorEditor::SENanotubeCreatorEditor() {
 
 	propertyWidget = new SENanotubeCreatorEditorGUI(this);
 	propertyWidget->loadDefaultSettings();
-	SAMSON::addWidget(propertyWidget);
 
 }
 

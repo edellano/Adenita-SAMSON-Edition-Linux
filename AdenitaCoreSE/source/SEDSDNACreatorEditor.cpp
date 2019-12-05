@@ -9,7 +9,6 @@ SEDSDNACreatorEditor::SEDSDNACreatorEditor() {
 
 	propertyWidget = new SEDSDNACreatorEditorGUI(this);
 	propertyWidget->loadDefaultSettings();
-	SAMSON::addWidget(propertyWidget);
 
   auto app = getAdenitaApp();
   nanorobot_ = app->GetNanorobot();

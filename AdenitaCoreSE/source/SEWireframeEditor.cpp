@@ -8,7 +8,6 @@ SEWireframeEditor::SEWireframeEditor() {
 
 	propertyWidget = new SEWireframeEditorGUI(this);
 	propertyWidget->loadDefaultSettings();
-	SAMSON::addWidget(propertyWidget);
 
 }
 

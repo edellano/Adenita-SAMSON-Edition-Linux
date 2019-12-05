@@ -8,7 +8,6 @@ SEMergePartsEditor::SEMergePartsEditor() {
 
 	propertyWidget = new SEMergePartsEditorGUI(this);
 	propertyWidget->loadDefaultSettings();
-	SAMSON::addWidget(propertyWidget);
 
 }
 

@@ -8,7 +8,6 @@ SELatticeCreatorEditor::SELatticeCreatorEditor() {
 
 	propertyWidget = new SELatticeCreatorEditorGUI(this);
 	propertyWidget->loadDefaultSettings();
-	SAMSON::addWidget(propertyWidget);
 
   setLatticeType(LatticeType::Honeycomb);
 

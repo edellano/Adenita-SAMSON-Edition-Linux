@@ -8,8 +8,6 @@ SEBreakEditor::SEBreakEditor() {
 
 	propertyWidget = new SEBreakEditorGUI(this);
 	propertyWidget->loadDefaultSettings();
-	SAMSON::addWidget(propertyWidget);
-
 }
 
 SEBreakEditor::~SEBreakEditor() {

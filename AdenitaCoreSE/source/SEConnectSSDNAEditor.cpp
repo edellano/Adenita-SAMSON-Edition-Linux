@@ -8,8 +8,6 @@ SEConnectSSDNAEditor::SEConnectSSDNAEditor() {
 
 	propertyWidget = new SEConnectSSDNAEditorGUI(this);
 	propertyWidget->loadDefaultSettings();
-	SAMSON::addWidget(propertyWidget);
-
 }
 
 SEConnectSSDNAEditor::~SEConnectSSDNAEditor() {

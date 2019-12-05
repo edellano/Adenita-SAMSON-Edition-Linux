@@ -8,7 +8,6 @@ SEDeleteEditor::SEDeleteEditor() {
 
 	propertyWidget = new SEDeleteEditorGUI(this);
 	propertyWidget->loadDefaultSettings();
-	SAMSON::addWidget(propertyWidget);
 
 }
 

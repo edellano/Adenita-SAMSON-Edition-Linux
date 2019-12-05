@@ -9,7 +9,6 @@ SETaggingEditor::SETaggingEditor() {
 
 	propertyWidget = new SETaggingEditorGUI(this);
 	propertyWidget->loadDefaultSettings();
-	SAMSON::addWidget(propertyWidget);
 
 }
 

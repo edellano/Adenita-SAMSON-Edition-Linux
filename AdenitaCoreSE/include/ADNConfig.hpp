@@ -12,7 +12,10 @@
 #include <string>
 #include <iostream>
 
+
 using namespace rapidjson;
+
+typedef GenericValue<UTF8<>, CrtAllocator> Val;
 
 enum SEConfigMode {
   DEBUG_LOG = 0,
@@ -110,6 +113,9 @@ public:
   // toggle to automatically set the scaffold sequence when loading a part
   bool auto_set_scaffold_sequence = true;
   bool custom_mesh_model = false;
+  // scaffold config
+  int scaffType = 0;
+  std::string scaffCustomFilename = "";
   // path to ntthal.exe
   std::string ntthal = "";
   // group general
@@ -124,7 +130,9 @@ public:
   void setDisplayPossibleCrossovers(bool b);
   void setClearLogFile(bool b);
   void setInterpolateDimensions(bool b);
-  void setNtthalExe(std::string filename);
+  void setNtthalExe(std::string filename, bool write = true);
+  void setScaffType(int typ);
+  void setScaffCustomFilename(std::string filename, bool write = true);
   void setCustomMeshModel(bool b);
 
 public slots:
@@ -135,9 +143,11 @@ private:
   // private constructors to implement singleton
   SEConfig();
   
-  const std::string DEBUG_CONFIGPATH = SAMSON::getUserDataPath() + "/adenita_debug_settings.json";
-  const std::string DEFAULT_CONFIGPATH = SAMSON::getUserDataPath() + "/adenita_settings.json";
-  Document setting_;
+  const std::string SAMSON_VERSION = std::to_string(SAMSON::getVersionNumber().getMajorVersionNumber()) + "."
+    + std::to_string(SAMSON::getVersionNumber().getMinorVersionNumber()) + "." + std::to_string(SAMSON::getVersionNumber().getPatchVersionNumber());
+  const std::string DEBUG_CONFIGPATH = SAMSON::getUserDataPath() + "/" + SAMSON_VERSION + "/adenita_debug_settings.json";
+  const std::string DEFAULT_CONFIGPATH = SAMSON::getUserDataPath() + "/" + SAMSON_VERSION + "/adenita_settings.json";
+  GenericDocument<UTF8<>, CrtAllocator> setting_;
   Document debugSetting_;
   QFileSystemWatcher configFileWatcher_;
   QFileSystemWatcher debugConfigFileWatcher_;
@@ -145,7 +155,7 @@ private:
   void loadConfig();
   void loadDebugConfig();
   void writeDoubleArray(Writer<StringBuffer> & writer, std::string key, double * arr, int length);
-  void readDoubleArray(Value & val, double * arr, int length);
+  void readDoubleArray(Val & val, double * arr, int length);
   void writeDocumentToJson();
 };
 

@@ -8,7 +8,6 @@ SETwistHelixEditor::SETwistHelixEditor() {
 
 	propertyWidget = new SETwistHelixEditorGUI(this);
 	propertyWidget->loadDefaultSettings();
-	SAMSON::addWidget(propertyWidget);
 
 }
 
