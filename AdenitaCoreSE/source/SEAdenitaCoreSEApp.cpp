@@ -191,8 +191,7 @@ void SEAdenitaCoreSEApp::ResetVisualModel() {
     SBProxy* vmProxy = SAMSON::getProxy("SEAdenitaVisualModel");
     SEAdenitaVisualModel* newVm = vmProxy->createInstance();
     newVm->create();
-    SAMSON::getActiveLayer()->addChild(newVm);
-
+    SAMSON::getActiveDocument()->addChild(newVm);
   }
 
   logger.LogDebug(std::string("Restarting visual model"));
@@ -619,9 +618,6 @@ void SEAdenitaCoreSEApp::ConnectToDocument()
   if (SAMSON::getActiveDocument()->documentSignalIsConnectedToSlot(this, SB_SLOT(&SEAdenitaCoreSEApp::onDocumentEvent)) == false) {
     SAMSON::getActiveDocument()->connectDocumentSignalToSlot(this, SB_SLOT(&SEAdenitaCoreSEApp::onDocumentEvent));
   }
-  if (SAMSON::getActiveLayer()->documentSignalIsConnectedToSlot(this, SB_SLOT(&SEAdenitaCoreSEApp::onDocumentEvent)) == false) {
-    SAMSON::getActiveLayer()->connectDocumentSignalToSlot(this, SB_SLOT(&SEAdenitaCoreSEApp::onDocumentEvent));
-  }
 }
 
 ADNNanorobot * SEAdenitaCoreSEApp::GetNanorobot()
@@ -701,7 +697,7 @@ void SEAdenitaCoreSEApp::AddPartToActiveLayer(ADNPointer<ADNPart> part, bool pos
 
   SAMSON::beginHolding("Add model");
   part->create();
-  SAMSON::getActiveLayer()->addChild(part());
+  SAMSON::getActiveDocument()->addChild(part());
   SAMSON::endHolding();
 }
 
