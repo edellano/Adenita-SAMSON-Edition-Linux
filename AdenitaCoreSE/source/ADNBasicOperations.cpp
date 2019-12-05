@@ -48,8 +48,7 @@ ADNPointer<ADNSingleStrand> ADNBasicOperations::MergeSingleStrands(ADNPointer<AD
   auto secondSize = second_strand->getNumberOfNucleotides();
   if (firstSize > 0 || secondSize > 0) {
     std::string msg = "Possible error when merging strands inside part";
-    ADNLogger& logger = ADNLogger::GetLogger();
-    logger.LogDebug(msg);
+    ADNLogger::LogDebug(msg);
   }
   else {
     // deregister single strands
@@ -89,8 +88,7 @@ ADNPointer<ADNDoubleStrand> ADNBasicOperations::MergeDoubleStrand(ADNPointer<ADN
   auto secondSize = second_strand->GetLength();
   if (firstSize > 0 || secondSize > 0) {
     std::string msg = "Possible error when merging strands inside part";
-    ADNLogger& logger = ADNLogger::GetLogger();
-    logger.LogDebug(msg);
+    ADNLogger::LogDebug(msg);
   }
 
   return ds;
@@ -243,8 +241,7 @@ std::pair<ADNPointer<ADNSingleStrand>, ADNPointer<ADNSingleStrand>> ADNBasicOper
   auto sz = ss->getNumberOfNucleotides();
   if (sz > 0) {
     std::string msg = "Possible error when breaking strands inside part";
-    ADNLogger& logger = ADNLogger::GetLogger();
-    logger.LogDebug(msg);
+    ADNLogger::LogDebug(msg);
   }
   else {
     // Deregister old strand
@@ -293,8 +290,7 @@ std::pair<ADNPointer<ADNDoubleStrand>, ADNPointer<ADNDoubleStrand>> ADNBasicOper
   auto sz = ds->GetBaseSegments().size();
   if (sz > 0) {
     std::string msg = "Possible error when breaking strands inside part";
-    ADNLogger& logger = ADNLogger::GetLogger();
-    logger.LogDebug(msg);
+    ADNLogger::LogDebug(msg);
   }
   else {
     // Deregister old strand
@@ -308,7 +304,6 @@ std::pair<ADNPointer<ADNDoubleStrand>, ADNPointer<ADNDoubleStrand>> ADNBasicOper
 std::pair<ADNPointer<ADNSingleStrand>, ADNPointer<ADNSingleStrand>> ADNBasicOperations::DeleteNucleotide(ADNPointer<ADNPart> part, ADNPointer<ADNNucleotide> nt)
 {
   SEConfig& config = SEConfig::GetInstance();
-  ADNLogger& logger = ADNLogger::GetLogger();
 
   auto numNts = part->GetNumberOfNucleotides();
   auto numSS = part->GetNumberOfSingleStrands();
@@ -369,13 +364,13 @@ std::pair<ADNPointer<ADNSingleStrand>, ADNPointer<ADNSingleStrand>> ADNBasicOper
 
   if (config.mode == DEBUG_NO_LOG || config.mode == DEBUG_LOG) {
     std::string msg = "  --> DELETING NUCLEOTIDE";
-    logger.Log(msg);
+    ADNLogger::LogDebug(msg);
     msg = "         Nucleotides before deletion: " + std::to_string(numNts) + "\n";
     msg += "         Nucleotides after deletion: " + std::to_string(numNtsNew);
-    logger.Log(msg);
+    ADNLogger::LogDebug(msg);
     msg = "         Single Strands before deletion: " + std::to_string(numSS) + "\n";
     msg += "         Single Strands after deletion: " + std::to_string(numSSNew);
-    logger.Log(msg);
+    ADNLogger::LogDebug(msg);
   }
 
   return res;
@@ -401,7 +396,6 @@ void ADNBasicOperations::DeleteNucleotideWithoutBreak(ADNPointer<ADNPart> part, 
 std::pair<ADNPointer<ADNDoubleStrand>, ADNPointer<ADNDoubleStrand>> ADNBasicOperations::DeleteBaseSegment(ADNPointer<ADNPart> part, ADNPointer<ADNBaseSegment> bs)
 {
   SEConfig& config = SEConfig::GetInstance();
-  ADNLogger& logger = ADNLogger::GetLogger();
 
   auto numBss = part->GetNumberOfBaseSegments();
   auto numDS = part->GetNumberOfDoubleStrands();
@@ -454,14 +448,14 @@ std::pair<ADNPointer<ADNDoubleStrand>, ADNPointer<ADNDoubleStrand>> ADNBasicOper
   auto numDSNew = part->GetNumberOfDoubleStrands();
 
   if (config.mode == DEBUG_NO_LOG || config.mode == DEBUG_LOG) {
-    std::string msg = "  --> DELETING NUCLEOTIDE";
-    logger.LogDebug(msg);
-    msg = "         Nucleotides before deletion: " + std::to_string(numBss) + "\n";
-    msg += "         Nucleotides after deletion: " + std::to_string(numBssNew);
-    logger.LogDebug(msg);
-    msg = "         Single Strands before deletion: " + std::to_string(numDS) + "\n";
-    msg += "         Single Strands after deletion: " + std::to_string(numDSNew);
-    logger.LogDebug(msg);
+    std::string msg = "  --> DELETING BASE SEGMENT";
+    ADNLogger::LogDebug(msg);
+    msg = "         Base segments before deletion: " + std::to_string(numBss) + "\n";
+    msg += "         Base segments after deletion: " + std::to_string(numBssNew);
+    ADNLogger::LogDebug(msg);
+    msg = "         Double Strands before deletion: " + std::to_string(numDS) + "\n";
+    msg += "         Double Strands after deletion: " + std::to_string(numDSNew);
+    ADNLogger::LogDebug(msg);
   }
 
   return res;

@@ -9,11 +9,6 @@ SEAdenitaCoreSEApp::SEAdenitaCoreSEApp() {
 	setGUI(new SEAdenitaCoreSEAppGUI(this));
 	getGUI()->loadDefaultSettings();
 
-  ADNLogger& logger = ADNLogger::GetLogger();
-  SEConfig& config = SEConfig::GetInstance();
-  if (config.clear_log_file) {
-    logger.ClearLog();
-  }
   SB_INFORMATION("Adenita started");
 }
 
@@ -174,8 +169,6 @@ void SEAdenitaCoreSEApp::GenerateSequence(double gcCont, int maxContGs, bool ove
 
 void SEAdenitaCoreSEApp::ResetVisualModel() {
   //create visual model per nanorobot
-  ADNLogger& logger = ADNLogger::GetLogger();
-
   clock_t start = clock();
   bool vmAlreadyExist = false;
 
@@ -194,7 +187,7 @@ void SEAdenitaCoreSEApp::ResetVisualModel() {
     SAMSON::getActiveDocument()->addChild(newVm);
   }
 
-  logger.LogDebug(std::string("Restarting visual model"));
+  ADNLogger::LogDebug(std::string("Restarting visual model"));
 }
 
 SBVisualModel* SEAdenitaCoreSEApp::GetVisualModel()
