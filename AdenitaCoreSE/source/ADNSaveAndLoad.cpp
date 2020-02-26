@@ -1048,16 +1048,21 @@ void ADNLoader::OutputToOxDNA(ADNPointer<ADNPart> part, std::string folder, ADNA
   outTopo.close();
 }
 
-void ADNLoader::OutputToOxDNA(ADNNanorobot* nanorobot, std::string folder, ADNAuxiliary::OxDNAOptions options)
+void ADNLoader::OutputToOxDNA(CollectionMap<ADNPart> parts, std::string folder, ADNAuxiliary::OxDNAOptions options)
 {
-  if (nanorobot == nullptr) return;
+  CollectionMap<ADNSingleStrand> singleStrands;
+  SB_FOR(ADNPointer<ADNPart> p, parts) {
+    auto sss = p->GetSingleStrands();
+    SB_FOR(ADNPointer<ADNSingleStrand> ss, sss) {
+      singleStrands.addReferenceTarget(ss());
+    }
+  }
 
   std::string fnameConf = "config.conf";
   std::ofstream outConf(folder + "/" + fnameConf);
   std::string fnameTopo = "topo.top";
   std::ofstream outTopo(folder + "/" + fnameTopo);
 
-  auto singleStrands = nanorobot->GetSingleStrands();
   SingleStrandsToOxDNA(singleStrands, outConf, outTopo, options);
 
   outConf.close();
